@@ -39,9 +39,11 @@ export default function Home() {
   function sumTodayValues(obj) {
     let sum = 0;
   
-    // Get today's date in the format "YYYY-MM-DD"
-    const todayDate = new Date().toISOString().split('T')[0];
-  // console.log(todayDate)
+    // Get yesterday's date in the format "YYYY-MM-DD", because there is a time different in Firebase DB and NextJS current time
+    let yesterdayDate = new Date();
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+    yesterdayDate = yesterdayDate.toISOString().split('T')[0];
+  
     // Regular expression to match the date part in the keys
     const dateRegex = /^(\d{4}-\d{2}-\d{2})T/;
   
@@ -53,9 +55,9 @@ export default function Home() {
         const match = key.match(dateRegex);
   
         // Check if there is a match and the extracted date is today
-        console.log(todayDate)
+        console.log(yesterdayDate)
         console.log(match && match[1])
-        if (match && match[1] === todayDate) {
+        if (match && match[1] === yesterdayDate) {
           // Iterate over the properties of the nested object
           for (let nestedKey in obj[key]) {
             // Check if the nested object has a numeric value
