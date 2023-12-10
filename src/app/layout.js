@@ -4,8 +4,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Water Dispenser',
-  description: 'Revolutionize the way the fridge dispense water',
+  title: 'WaterHub',
+  description: 'Sip by Sip, Track Your Trip to Hydration!',
 }
 
 export default function RootLayout({ children }) {
