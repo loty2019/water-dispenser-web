@@ -12,8 +12,6 @@ export default function Home() {
   // Define the state variable 'users' and the function to update it 'setUsers'
   const [users, setUsers] = useState([]);
 
-  // Create a reference to the 'water_consumption' node in the database
-  
   // Fetch the data from the database when the component mounts
   useEffect(() => {
     const usersRef = ref(database, 'water_consumption');
@@ -55,8 +53,6 @@ export default function Home() {
         const match = key.match(dateRegex);
   
         // Check if there is a match and the extracted date is today
-        console.log(yesterdayDate)
-        console.log(match && match[1])
         if (match && match[1] === yesterdayDate) {
           // Iterate over the properties of the nested object
           for (let nestedKey in obj[key]) {
@@ -72,23 +68,23 @@ export default function Home() {
     return sum;
   }
 
-  console.log(users);
+  function switchTheme() {
+    
+  } 
+
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <h1 className="flex text-center text-5xl">How much water have you drunk today?</h1>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-      </div>
+    <main className="flex min-h-screen flex-col items-center justify-evenly p-4 lg:p-24">
+      <div class="block dark:hidden absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
+      <button className=''>Switch Theme</button>
+      <h1 className="text-4xl font-mono">How much water have you drunk today?</h1>
 
       <div className="mb-32  text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left">
         <section className="h-16 flex justify-evenly">
           {users.map((user, index) => (
             <div className="entry mr-8" key={index}>
-              <h1 className="text-sm md:text-4xl capitalize">{user.id}</h1>
-              <p>Amount drank today: {sumTodayValues(user)} oz</p>
+              <h1 className="text-2xl md:text-4xl capitalize">{user.id}</h1>
+              <p className='text-sm'>drank: {sumTodayValues(user)} oz</p>
             </div>
           ))}
         </section>
