@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { useState,useEffect } from 'react'
 import { push, get, ref, set } from 'firebase/database'
 import { database } from './firebaseConfig'
+import FluidMeter from './components/FluidMeter'
 
 /**
  * Represents the Home component.
@@ -11,6 +12,7 @@ import { database } from './firebaseConfig'
 export default function Home() {
   // Define the state variable 'users' and the function to update it 'setUsers'
   const [users, setUsers] = useState([]);
+  
 
   // Fetch the data from the database when the component mounts
   useEffect(() => {
@@ -75,16 +77,17 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-evenly p-4 lg:p-24">
-      <div class="block dark:hidden absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
+      <div className="block dark:hidden absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
       <button className=''>Switch Theme</button>
       <h1 className="text-4xl font-mono">How much water have you drunk today?</h1>
 
-      <div className="mb-32  text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left">
+      <div className="mb-4  text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left">
         <section className="h-16 flex justify-evenly">
           {users.map((user, index) => (
-            <div className="entry mr-8" key={index}>
+            <div className="entry mr-8 text-center" key={index}>
               <h1 className="text-2xl md:text-4xl capitalize">{user.id}</h1>
-              <p className='text-sm'>drank: {sumTodayValues(user)} oz</p>
+              <p className='text-sm mb-4'>drank: {sumTodayValues(user)} oz</p>
+              <FluidMeter percentage={sumTodayValues(user)/125 * 100}/>
             </div>
           ))}
         </section>

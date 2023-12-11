@@ -1,0 +1,48 @@
+.water-container {
+    margin: auto;
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
+  
+  .water {
+    margin: auto;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: #80c5de;
+    box-shadow: inset 0 0 50px #1c637c;
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+    overflow: hidden;
+  }
+  
+  .water-before,
+  .water-after {
+    content: "";
+    width: 200%;
+    height: 200%;
+    position: absolute;
+    top: -180%;
+    left: -50%;
+    border-radius: 40%;
+    animation: anim 12s linear infinite;
+  }
+  
+  .water-before {
+    background-color: #ececec;
+  }
+  
+  .water-after {
+    background-color: #ececec80;
+    animation-delay: 0.5s;
+  }
+  
+  @keyframes anim {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
