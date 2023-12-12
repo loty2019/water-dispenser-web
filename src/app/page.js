@@ -59,16 +59,16 @@ export default function Home() {
 
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-evenly p-4 lg:p-24">
+    <main className=" min-h-screen p-4 lg:p-24">
       
-      <h1 className="text-4xl font-mono">How much water have you drunk today?</h1>
+      <h1 className="h-48 pt-16 text-4xl font-mono text-blue-950 dark:text-white">How much water have you drunk today?</h1>
 
       <div className="mb-4  text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left">
-        <section className="h-16 flex justify-evenly">
+        <section className="flex flex-col lg:flex-row justify-evenly">
           {users.map((user, index) => (
-            <div className="entry mr-8 text-center" key={index}>
+            <div className="entry text-center mb-16" key={index}>
               <h1 className="text-2xl md:text-4xl capitalize">{user.id}</h1>
-              <p className='text-sm mb-4'>drank: {getSum(user)} oz</p>
+              <p className='font-bold  mb-4 text-blue-950 dark:text-white'>drank: {getSum(user)} oz</p>
               <FluidMeter percentage={getSum(user)/125 * 100}/>
             </div>
           ))}
