@@ -29,3 +29,9 @@ body {
 body * {
     @apply transition-colors duration-200;
 }
+
+@layer base{
+  body {
+      @apply dark:bg-blue-950 bg-white
+  }
+}
