@@ -85,11 +85,11 @@ export default function Home() {
 
 
   return (
-    <main className=" min-h-screen p-4 lg:p-24">
-      
-      <h1 className=" text-4xl font-mono text-blue-950 dark:text-white">How much water have you drunk today?</h1>
+    <main className=" min-h-screen p-4 lg:p-24 flex-col space-y-10">
+    
+      <h1 className=" text-4xl font-mono text-blue-950 dark:text-white flex justify-center ">How much water did you drink today?</h1>
 
-      <div className="mb-4  text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left">
+      <div className="mb-4 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto">
         <section className="flex flex-col lg:flex-row justify-evenly">
           {users.map((user, index) => (
             <div className="entry text-center mb-16" key={index}>
@@ -99,16 +99,19 @@ export default function Home() {
             </div>
           ))}
         </section>
-
-        <section className='text-center'>
-          <p className='text-center inline-block'>Total ever drank: {desiredValue}</p>
-          <select className='ml-2 inline-block' onChange={onOptionChangeHandler}>
-                    <option value="option1">Gallon</option>
-                    <option value="option2">Liter</option>
-                    <option value="option3">Glasses</option>
-                    <option value="option4">oz</option>
-          </select>
+       
+        <section className='text-center mx-auto'>
+          <div className='border border-black p-2 inline-block rounded-md'>
+            <p className='text-center inline-block font-bold text-xl'>Total ever drank: {desiredValue}</p>
+            <select className='ml-2 inline-block font-semibold border border-black rounded-sm text-xl dark:bg-transparent' onChange={onOptionChangeHandler}>
+                      <option value="option1">gallons</option>
+                      <option value="option2">liters</option>
+                      <option value="option3">glasses</option>
+                      <option value="option4">ounces</option>
+            </select>
+          </div>
         </section>
+
       </div>
     </main>
   );
