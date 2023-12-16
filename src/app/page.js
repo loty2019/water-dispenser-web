@@ -6,13 +6,12 @@ import { database } from './firebaseConfig'
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
-  const todayDate = new Date().toISOString().split('T')[0];
-  const adjustedDate = new Date();
-  adjustedDate.setDate(adjustedDate.getDate() - 1);
-  const adjustedDateString = adjustedDate.toISOString().split('T')[0];
+  const todayDate = new Date();
+  todayDate.setDate(todayDate.getDate());
+  const todayDateString = todayDate.toISOString().split('T')[0];
+  console.log(todayDateString)
 
-
-  return records[adjustedDateString] || [];
+  return records[todayDateString] || [];
 };
 
 function getSum(user) {
