@@ -1,9 +1,8 @@
-'use client' 
-import Image from 'next/image'
-import { useState,useEffect } from 'react'
-import { push, get, ref, set } from 'firebase/database'
-import { database } from './firebaseConfig'
+'use client'
+import { get, ref } from 'firebase/database'
+import { useEffect, useState } from 'react'
 import FluidMeter from './components/FluidMeter'
+import { database } from './firebaseConfig'
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
@@ -11,18 +10,13 @@ const extractUsersForToday = (records) => {
   const adjustedDate = new Date();
   adjustedDate.setDate(adjustedDate.getDate() - 1);
   const adjustedDateString = adjustedDate.toISOString().split('T')[0];
-  
+
 
   return records[adjustedDateString] || [];
 };
 
 function getSum(user) {
   return user.data.reduce((sum, entry) => sum + entry.value, 0);
-}
-
-function getDesireValue(value) {
-
-  
 }
 
 /**
@@ -34,7 +28,7 @@ export default function Home() {
   const [users, setUsers] = useState([]);
   const [accumulatedAmount, setAccumulatedAmount] = useState(0);
   const [desiredValue, setDesiredValue] = useState(0);
-  
+
 
   // Fetch the data from the database when the component mounts
   useEffect(() => {
@@ -81,12 +75,12 @@ export default function Home() {
         setDesiredValue(accumulatedAmount.toFixed(1));
         break;
     }
-};
+  };
 
 
   return (
     <main className=" min-h-screen p-4 lg:p-24 flex-col space-y-10">
-    
+
       <h1 className=" text-4xl font-mono text-blue-950 dark:text-white flex justify-center ">How much water did you drink today?</h1>
 
       <div className="mb-4 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto">
@@ -95,19 +89,19 @@ export default function Home() {
             <div className="entry text-center mb-16" key={index}>
               <h1 className="text-2xl md:text-4xl capitalize">{user.name}</h1>
               <p className='font-bold  mb-2 text-blue-950 dark:text-white'>drank: {getSum(user)} oz</p>
-              <FluidMeter percentage={getSum(user)/125 * 100}/>
+              <FluidMeter percentage={getSum(user) / 125 * 100} />
             </div>
           ))}
         </section>
-       
+
         <section className='text-center mx-auto'>
           <div className='border border-black p-2 inline-block rounded-md'>
             <p className='text-center inline-block font-bold text-xl'>Total ever drank: {desiredValue}</p>
             <select className='ml-2 inline-block font-semibold border border-black rounded-sm text-xl dark:bg-transparent' onChange={onOptionChangeHandler}>
-                      <option value="option1">gallons</option>
-                      <option value="option2">liters</option>
-                      <option value="option3">glasses</option>
-                      <option value="option4">ounces</option>
+              <option value="option1">gallons</option>
+              <option value="option2">liters</option>
+              <option value="option3">glasses</option>
+              <option value="option4">ounces</option>
             </select>
           </div>
         </section>

@@ -1,26 +1,127 @@
-import React from 'react';
 import './FluidMeter.css'; // Make sure to import your CSS file
 
 const FluidMeter = ({ percentage }) => {
 
     let adjustedPercentage;
-    let waterStyle = {};
-    waterStyle.top = "";
+    let maskStyle = {};
+    maskStyle.height = "";
     if (percentage <= 0) {
-        waterStyle.top = '-100%';
+        maskStyle.height = '0%';
     } else if (percentage >= 100) {
-        waterStyle.top = '-200%';
+        maskStyle.height = '100%';
     } else {
-        waterStyle.top = `-1${percentage}%`;
+        maskStyle.height = `${percentage}%`;
     }
 
 
+
+
     return (
-        <div className="water-container">
-        <div className="water" >
-            <div className="water-before" style={waterStyle}></div>
-            <div className="water-after" style={waterStyle}></div>
-        </div>
+        <div className="bottle-container mx-auto transition-all duration-200">
+            <div className="mask">
+                <div className="fill" style={maskStyle}></div>
+            </div>
+
+            <svg width="66" height="192" className='bottle' viewBox="0 0 66 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <clipPath id="bottle">
+
+                        <path
+                            d="M51.6438 190.92H13.6611C6.66909 190.92 1.00017 185.252 1.00017 178.26L1.00017 93.5676C1.00017 91.0481 2.00038 88.6331 3.78241 86.8542C7.49205 83.1446 7.49205 77.1338 3.78241 73.4241C2.00038 71.6421 1.00017 69.2271 1.00017 66.7107V61.8173C1.00017 47.5579 8.1251 34.2418 19.9915 26.3319V20.0015L45.3133 20.0015V26.3319C57.1798 34.2387 64.3047 47.5548 64.3047 61.8141L64.3047 66.7107C64.3047 69.2302 63.3045 71.6453 61.5225 73.4241C57.8128 77.1338 57.8128 83.1446 61.5225 86.8542C63.3045 88.6362 64.3047 91.0513 64.3047 93.5676L64.3047 178.26C64.3047 185.252 58.6358 190.92 51.6438 190.92Z"
+                            stroke="black"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
+                    </clipPath>
+                </defs>
+                <mask
+                    id="mask0_4560_81980"
+                    // style="mask-type:alpha"
+                    maskUnits="userSpaceOnUse"
+                    x="1"
+                    y="19"
+                    width="64"
+                    height="172"
+                >
+                    <path
+                        d="M51.8962 190.91H13.9135C6.92153 190.91 1.25262 185.241 1.25262 178.249L1.25262 93.5571C1.25262 91.0376 2.25283 88.6226 4.03485 86.8437C7.74449 83.1341 7.74449 77.1233 4.03485 73.4137C2.25283 71.6316 1.25262 69.2166 1.25262 66.7002V61.8068C1.25262 47.5474 8.37754 34.2313 20.244 26.3214V19.991L45.5658 19.991V26.3214C57.4322 34.2282 64.5571 47.5443 64.5571 61.8036L64.5571 66.7002C64.5571 69.2197 63.5569 71.6348 61.7749 73.4137C58.0653 77.1233 58.0653 83.1341 61.7749 86.8437C63.5569 88.6257 64.5571 91.0408 64.5571 93.5571L64.5571 178.249C64.5571 185.241 58.8882 190.91 51.8962 190.91Z"
+                        fill="#D9D9D9"
+                    />
+                </mask>
+                <g mask="url(#mask0_4560_81980)">
+                    <mask id="path-2-inside-1_4560_81980" fill="white">
+                        <path d="M70.8916 169.384L-25.6478 169.384V190.908H70.8916V169.384Z" />
+                    </mask>
+                    <path
+                        d="M70.8916 170.584L-25.6478 170.584V168.184L70.8916 168.184V170.584Z"
+                        fill="black"
+                        mask="url(#path-2-inside-1_4560_81980)"
+                    />
+                    <mask id="path-4-inside-2_4560_81980" fill="white">
+                        <path d="M70.8916 83.9302L-25.6478 83.9302V105.454L70.8916 105.454V83.9302Z" />
+                    </mask>
+                    <path
+                        d="M70.8916 85.1302L-25.6478 85.1302V82.7302L70.8916 82.7302V85.1302Z"
+                        fill="black"
+                        mask="url(#path-4-inside-2_4560_81980)"
+                    />
+                    <mask id="path-6-inside-3_4560_81980" fill="white">
+                        <path d="M70.8916 148.18L-25.6478 148.18V169.387H70.8916V148.18Z" />
+                    </mask>
+                    <path
+                        d="M70.8916 149.38L-25.6478 149.38V146.98L70.8916 146.98V149.38Z"
+                        fill="black"
+                        mask="url(#path-6-inside-3_4560_81980)"
+                    />
+                    <mask id="path-8-inside-4_4560_81980" fill="white">
+                        <path d="M70.8916 62.7168L-25.6478 62.7168V83.9238L70.8916 83.9238V62.7168Z" />
+                    </mask>
+                    <path
+                        d="M70.8916 63.9168L-25.6478 63.9168V61.5168L70.8916 61.5168V63.9168Z"
+                        fill="black"
+                        mask="url(#path-8-inside-4_4560_81980)"
+                    />
+                    <mask id="path-10-inside-5_4560_81980" fill="white">
+                        <path d="M70.8916 126.657L-25.6478 126.657V148.181H70.8916V126.657Z" />
+                    </mask>
+                    <path
+                        d="M70.8916 127.857L-25.6478 127.857V125.457L70.8916 125.457V127.857Z"
+                        fill="black"
+                        mask="url(#path-10-inside-5_4560_81980)"
+                    />
+                    <mask id="path-12-inside-6_4560_81980" fill="white">
+                        <path d="M70.8916 41.1948L-25.6478 41.1948V62.7184L70.8916 62.7184V41.1948Z" />
+                    </mask>
+                    <path
+                        d="M70.8916 42.3948L-25.6478 42.3948V39.9948L70.8916 39.9948V42.3948Z"
+                        fill="black"
+                        mask="url(#path-12-inside-6_4560_81980)"
+                    />
+                    <mask id="path-14-inside-7_4560_81980" fill="white">
+                        <path d="M70.8916 105.453L-25.6478 105.453V126.66L70.8916 126.66V105.453Z" />
+                    </mask>
+                    <path
+                        d="M70.8916 106.653L-25.6478 106.653V104.253L70.8916 104.253V106.653Z"
+                        fill="black"
+                        mask="url(#path-14-inside-7_4560_81980)"
+                    />
+                </g>
+                <path
+                    d="M51.6438 190.92H13.6611C6.66909 190.92 1.00017 185.252 1.00017 178.26L1.00017 93.5676C1.00017 91.0481 2.00038 88.6331 3.78241 86.8542C7.49205 83.1446 7.49205 77.1338 3.78241 73.4241C2.00038 71.6421 1.00017 69.2271 1.00017 66.7107V61.8173C1.00017 47.5579 8.1251 34.2418 19.9915 26.3319V20.0015L45.3133 20.0015V26.3319C57.1798 34.2387 64.3047 47.5548 64.3047 61.8141L64.3047 66.7107C64.3047 69.2302 63.3045 71.6453 61.5225 73.4241C57.8128 77.1338 57.8128 83.1446 61.5225 86.8542C63.3045 88.6362 64.3047 91.0513 64.3047 93.5676L64.3047 178.26C64.3047 185.252 58.6358 190.92 51.6438 190.92Z"
+                    stroke="black"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                <path
+                    d="M43.3788 1L22.2763 1C19.3643 1 16.9999 3.36442 16.9999 6.27643L16.9999 19.9914L48.6553 19.9914V6.27643C48.6553 3.36442 46.2909 1 43.3788 1Z"
+                    stroke="black"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+            </svg>
         </div>
     );
 };
