@@ -1,48 +1,32 @@
-.water-container {
-    margin: auto;
-    position: relative;
-    width: 200px;
-    height: 200px;
-  }
-  
-  .water {
-    margin: auto;
-    position: relative;
-    height: 100%;
-    width: 100%;
-    background-color: #80c5de;
-    box-shadow: inset 0 0 50px #1c637c;
-    clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
-    overflow: hidden;
-  }
-  
-  .water-before,
-  .water-after {
-    content: "";
-    width: 200%;
-    height: 200%;
-    position: absolute;
-    top: -180%;
-    left: -50%;
-    border-radius: 40%;
-    animation: anim 12s linear infinite;
-  }
-  
-  .water-before {
-    background-color: #ececec;
-  }
-  
-  .water-after {
-    background-color: #ececec80;
-    animation-delay: 0.5s;
-  }
-  
-  @keyframes anim {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
+.bottle-container {
+  position: relative;
+  height: 192px;
+  width: 66px;
+}
+
+.bottle-container .mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: transparent;
+  height: 100%;
+  width: 100%;
+  -webkit-clip-path: url(#bottle);
+  clip-path: url(#bottle);
+}
+
+.bottle-container .mask .fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: #55C0F3;
+  height: 0%;
+  /* Adjust height for desired progress */
+  width: 100%;
+}
+
+svg.bottle {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
