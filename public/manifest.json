@@ -1,0 +1,29 @@
+{
+    "id": "any_id",
+    "name": "Refridgerator Water Dispenser",
+    "short_name": "WaterHub",
+    "description": "This project aims to automate the refrigerator water dispenser. Originally located inside the fridge, it has been moved outside using a custom 3D-designed fountain. We first prototyped it on Arduino and then transitioned to the ESP32 platform with internet capabilities. The entire system now operates on a real-time database hosted on Firebase.",
+    "icons": [
+        {
+            "src": "logo/72.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
+        {
+            "src": "logo/192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "logo/512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#6ec3f4",
+    "background_color": "#FFFFFF",
+    "start_url": "/",
+    "scope": ".",
+    "display": "standalone",
+    "orientation": "portrait"
+}

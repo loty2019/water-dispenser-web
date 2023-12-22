@@ -31,6 +31,7 @@ export default function Home() {
   const [desiredValue, setDesiredValue] = useState(0);
 
 
+
   // Fetch the data from the database when the component mounts
   useEffect(() => {
     const usersRef = ref(database, 'records');
@@ -60,6 +61,10 @@ export default function Home() {
         console.error(error);
       });
   }, []);
+
+  // [lorenzo, +{laci}]
+  // lorenzo button 1 => {lorenzo: [24], if theres no laci in firebase that date, then laci: [0]}
+  // laci button 2 => {lorenzo: [0], laci: [32]}
 
   const onOptionChangeHandler = (event) => {
     switch (event.target.value) { // option1 | option2 | option3
