@@ -120,6 +120,7 @@ const FluidMeter = ({ percentage }) => {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    fill='white'
                 />
             </svg>
         </div>
