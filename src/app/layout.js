@@ -6,6 +6,7 @@ import { ThemeProvider } from './theme-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
+  manifest: '/manifest.json',
   title: 'WaterHub',
   description: 'Sip by Sip, Track Your Trip to Hydration!',
 }
