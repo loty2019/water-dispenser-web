@@ -13,6 +13,7 @@
   width: 100%;
   -webkit-clip-path: url(#bottle);
   clip-path: url(#bottle);
+  background: #ffffff;
 }
 
 .bottle-container .mask .fill {
