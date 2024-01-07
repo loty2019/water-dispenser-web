@@ -1,8 +1,9 @@
 'use client'
-import { get, ref } from 'firebase/database'
+import { get, ref, push, set } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import FluidMeter from './components/FluidMeter'
 import { database } from './firebaseConfig'
+
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
@@ -12,6 +13,13 @@ const extractUsersForToday = (records) => {
   const [month, day, year] = todayDateString.split('-');
   const formattedDateString = `${year}-${month}-${day}`;
   console.log(formattedDateString);
+
+  const now = new Date();
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+  const time =  hours + ':' + minutes + ':' + seconds;
+  console.log(time);
 
   return records[formattedDateString] || [];
 };
@@ -29,9 +37,52 @@ export default function Home() {
   const [users, setUsers] = useState([]);
   const [accumulatedAmount, setAccumulatedAmount] = useState(0);
   const [desiredValue, setDesiredValue] = useState(0);
+  const [fluidValue, setFluidValue] = useState('');
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  
 
+  const handleFluidChange = (event) => {
+    setFluidValue(event.target.value);
+  };
 
+  const handleFluidSubmit = (name, value) => {
+    // get formatted string for the date
+    const todayDate = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+    const options = { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' };
+    const todayDateString = new Date(todayDate).toLocaleString('en-US', options).split(',')[0].replace(/\//g, '-');
+    const [month, day, year] = todayDateString.split('-');
+    const formattedDateString = `${year}-${month}-${day}`;
 
+    // get formatted time hh:mm:ss in the US east coast
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const time =  hours + ':' + minutes + ':' + seconds;
+    console.log(time);
+
+    // create path to store the new values
+    let path = `records/${formattedDateString}/${name}/${time}`;
+    const fluidRef = ref(database, path);
+
+    // set values in the database
+    set(fluidRef, parseInt(value))
+      .then(() => {
+        console.log('Fluid value added to the database');
+
+        // Update the 'users' state with the fetched data for today
+        const updatedUsers = [...users];
+        const userIndex = updatedUsers.findIndex(user => user.name === name);
+        if (userIndex !== -1) {
+          updatedUsers[userIndex].data.push({ time, value: parseInt(value) });
+          setUsers(updatedUsers);
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding fluid value to the database:', error);
+      });
+  };
+  
   // Fetch the data from the database when the component mounts
   useEffect(() => {
     const usersRef = ref(database, 'records');
@@ -60,6 +111,7 @@ export default function Home() {
       .catch((error) => {
         console.error(error);
       });
+      
   }, []);
 
   // [lorenzo, +{laci}]
@@ -82,7 +134,8 @@ export default function Home() {
         break;
     }
   };
-
+  
+// <input className="mt-7 bg-transparent border border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white text-center font-bold py-2 rounded-full transition-all duration-200 placeholder-black" placeholder="Add Fluid"></input>
 
   return (
     <main className=" min-h-screen p-4 lg:p-24 flex-col space-y-10">
@@ -90,13 +143,31 @@ export default function Home() {
       <h1 className=" text-4xl font-mono text-blue-950 dark:text-white flex justify-center ">How much water did you drink today?</h1>
 
       <div className="mb-4 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto">
-        <section className="flex flex-col lg:flex-row justify-evenly">
+        <section className="flex justify-evenly">
           {users.map((user, index) => (
             <div className="entry text-center mb-16" key={index}>
               <h1 className="text-2xl md:text-4xl capitalize">{user.name}</h1>
-              <p className='font-bold  mb-2 text-blue-950 dark:text-white'>drank: {getSum(user)} oz</p>
+              <p className='font-bold  mb-2 text-blue-950 dark:text-white'>{getSum(user)} oz</p>
               <FluidMeter percentage={getSum(user) / 125 * 100} />
-            </div>
+              
+              <input
+                className="mt-7 bg-transparent border border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white text-center font-bold py-2 rounded-full transition-all duration-200 placeholder-black"
+                placeholder="Add Fluid"
+                value={fluidValue}
+                onChange={handleFluidChange}
+                onFocus={() => setIsInputFocused(true)}
+                onBlur={() => setTimeout(() => setIsInputFocused(false), 500)}
+              />
+              {isInputFocused && (
+                <button
+                  className="ml-2 inline-block p-2 bg-[#ffffff] hover:bg-[#55C0F3] font-semibold border border-black rounded-full text-x"
+                  onClick={() => handleFluidSubmit(user.name, fluidValue)}
+                >
+                  Submit
+                </button>
+              )}
+
+              </div>
           ))}
         </section>
 
