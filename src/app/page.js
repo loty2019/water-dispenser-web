@@ -162,7 +162,7 @@ export default function Home() {
               <FluidMeter percentage={getSum(user) / 125 * 100} />
               
               <input
-                className="mt-7 w-24 bg-transparent border border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
+                className="mt-7 w-24 border-2 bg-transparent border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
                 placeholder="Add Fluid"
                 value={inputValues[user.name] || ''}
                 onChange={(e) => handleFluidChange(e, user.name)}
@@ -176,7 +176,7 @@ export default function Home() {
               />
               {focusStates[user.name] && (
                 <button
-                  className="ml-2 inline-block p-2 bg-[#ffffff] hover:bg-[#55C0F3] transition-all duration-200 font-semibold border border-black rounded-full text-x"
+                  className="ml-2 inline-block p-2 bg-[#ffffff] hover:bg-[#55C0F3] transition-all duration-200 font-semibold border-2 border-black rounded-full text-x"
                   onClick={() => handleFluidSubmit(user.name, inputValues[user.name])}
                 >
                   Submit
