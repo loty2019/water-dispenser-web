@@ -37,13 +37,23 @@ export default function Home() {
   const [users, setUsers] = useState([]);
   const [accumulatedAmount, setAccumulatedAmount] = useState(0);
   const [desiredValue, setDesiredValue] = useState(0);
-  const [fluidValue, setFluidValue] = useState('');
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [focusStates, setFocusStates] = useState({});
+  const [inputValues, setInputValues] = useState({});
   
 
-  const handleFluidChange = (event) => {
-    setFluidValue(event.target.value);
+  const handleFluidChange = (event, name) => {
+    setInputValues({ ...inputValues, [name]: event.target.value });
+    //setFluidValue(event.target.value);
+    setFocusStates({ ...focusStates, [name]: true });
   };
+
+  const handleBlur = (name) => {
+    // Set a timeout to allow click event to fire before hiding the button
+    setTimeout(() => {
+      setFocusStates({ ...focusStates, [name]: false });
+    }, 500);
+  };
+
 
   const handleFluidSubmit = (name, value) => {
     // get formatted string for the date
@@ -81,6 +91,7 @@ export default function Home() {
       .catch((error) => {
         console.error('Error adding fluid value to the database:', error);
       });
+      setInputValues({ ...inputValues, [name]: '' });
   };
   
   // Fetch the data from the database when the component mounts
@@ -151,17 +162,17 @@ export default function Home() {
               <FluidMeter percentage={getSum(user) / 125 * 100} />
               
               <input
-                className="mt-7 bg-transparent border border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white text-center font-bold py-2 rounded-full transition-all duration-200 placeholder-black"
+                className="mt-7 w-24 bg-transparent border border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
                 placeholder="Add Fluid"
-                value={fluidValue}
-                onChange={handleFluidChange}
-                onFocus={() => setIsInputFocused(true)}
-                onBlur={() => setTimeout(() => setIsInputFocused(false), 500)}
+                value={inputValues[user.name] || ''}
+                onChange={(e) => handleFluidChange(e, user.name)}
+                onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
+                onBlur={() => handleBlur(user.name)}
               />
-              {isInputFocused && (
+              {focusStates[user.name] && (
                 <button
-                  className="ml-2 inline-block p-2 bg-[#ffffff] hover:bg-[#55C0F3] font-semibold border border-black rounded-full text-x"
-                  onClick={() => handleFluidSubmit(user.name, fluidValue)}
+                  className="ml-2 inline-block p-2 bg-[#ffffff] hover:bg-[#55C0F3] transition-all duration-200 font-semibold border border-black rounded-full text-x"
+                  onClick={() => handleFluidSubmit(user.name, inputValues[user.name])}
                 >
                   Submit
                 </button>
@@ -172,7 +183,7 @@ export default function Home() {
         </section>
 
         <section className='text-center mx-auto'>
-          <div className='border border-black p-2 inline-block rounded-md'>
+          <div className= 'border-black border-2 p-2 inline-block rounded-md'>
             <p className='text-center inline-block font-bold text-xl'>Total ever drank: {desiredValue}</p>
             <select className='ml-2 inline-block font-semibold border border-black rounded-sm text-xl dark:bg-transparent' onChange={onOptionChangeHandler}>
               <option value="option1">gallons</option>
