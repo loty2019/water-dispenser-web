@@ -77,7 +77,7 @@ export default function Home() {
     const fluidRef = ref(database, path);
 
     // set values in the database
-    set(fluidRef, parseInt(value))
+    set(fluidRef, parseInt(value)) && set(ref(database, 'records/forever_consumption'), accumulatedAmount + parseInt(value))
       .then(() => {
         console.log('Fluid value added to the database');
 
