@@ -179,7 +179,7 @@ export default function Home() {
               />
               {focusStates[user.name] && (
                 <button
-                  className="ml-2 inline-block p-2 bg-[#ffffff] hover:bg-[#55C0F3] transition-all duration-200 font-semibold border-2 border-black rounded-full text-x"
+                  className="ml-2 inline-block p-2 bg-[#ffffff] hover:bg-[#55C0F3] transition-all duration-200 font-semibold border-2 dark:text-black border-black rounded-full text-x"
                   onClick={() => handleFluidSubmit(user.name, inputValues[user.name])}
                 >
                   Submit
@@ -204,8 +204,8 @@ export default function Home() {
       </div>
       <footer className="flex justify-center">
         <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
-          Drinking enough water is vital for our health, as it aids in maintaining body temperature, lubricating joints, and removing waste. While individual hydration needs vary, a general guideline is to consume a variety of fluids and water-rich foods daily. The virtual 2-liter water bottle is designed to help you reach these hydration targets with ease.
-            <a className='' href="https://www.cdc.gov/healthyweight/healthy_eating/water-and-healthier-drinks.html" target="_blank"><u>Learn more</u></a>
+            Drinking enough water is vital for our health, as it aids in maintaining body temperature, lubricating joints, and removing waste. While individual hydration needs vary, a general guideline is to consume a variety of fluids and water-rich foods daily. The virtual 2-liter water bottle is designed to help you reach these hydration targets with ease.
+            <a className='' href="https://www.cdc.gov/healthyweight/healthy_eating/water-and-healthier-drinks.html" target="_blank"><u> Learn more</u></a>
         </p>
       </footer>
     </main>
