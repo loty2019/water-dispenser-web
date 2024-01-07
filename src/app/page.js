@@ -168,6 +168,11 @@ export default function Home() {
                 onChange={(e) => handleFluidChange(e, user.name)}
                 onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
                 onBlur={() => handleBlur(user.name)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleFluidSubmit(user.name, inputValues[user.name]);
+                  }
+                }}
               />
               {focusStates[user.name] && (
                 <button
