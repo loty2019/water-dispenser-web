@@ -3,7 +3,8 @@ import { get, ref, push, set } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import FluidMeter from './components/FluidMeter'
 import { database } from './firebaseConfig'
-
+import Image from 'next/image';
+import WaterHubLogo from '/public/img/WaterHub.png';
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
@@ -151,8 +152,10 @@ export default function Home() {
   return (
     <main className=" min-h-screen p-4 lg:p-24 flex-col space-y-10">
 
-      <h1 className=" text-4xl font-mono text-blue-950 dark:text-white flex justify-center ">How much water did you drink today?</h1>
-
+      <div className="flex items-center justify-center">
+        <Image src={WaterHubLogo} alt="Image" width={100} height={100} className="mr-2" />
+        <h1 className="text-4xl font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">How much water did you drink today?</h1>
+      </div>
       <div className="mb-4 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto">
         <section className="flex justify-evenly">
           {users.map((user, index) => (
@@ -162,7 +165,7 @@ export default function Home() {
               <FluidMeter percentage={getSum(user) / 125 * 100} />
               
               <input
-                className="mt-7 w-24 border-2 bg-transparent border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
+                className="mt-7 w-24 border-2 bg-transparent border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white dark:placeholder-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
                 placeholder="Add Fluid"
                 value={inputValues[user.name] || ''}
                 onChange={(e) => handleFluidChange(e, user.name)}
@@ -190,7 +193,7 @@ export default function Home() {
         <section className='text-center mx-auto'>
           <div className= 'border-black border-2 p-2 inline-block rounded-md'>
             <p className='text-center inline-block font-bold text-xl'>Total ever drank: {desiredValue}</p>
-            <select className='ml-2 inline-block font-semibold border border-black rounded-sm text-xl dark:bg-transparent' onChange={onOptionChangeHandler}>
+            <select className='ml-2 inline-block font-semibold border border-black rounded-sm text-xl bg-transparent' onChange={onOptionChangeHandler}>
               <option value="option1">gallons</option>
               <option value="option2">liters</option>
               <option value="option3">glasses</option>
@@ -198,8 +201,13 @@ export default function Home() {
             </select>
           </div>
         </section>
-
       </div>
+      <footer className="flex justify-center">
+        <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
+          Drinking enough water is vital for our health, as it aids in maintaining body temperature, lubricating joints, and removing waste. While individual hydration needs vary, a general guideline is to consume a variety of fluids and water-rich foods daily. The virtual 2-liter water bottle is designed to help you reach these hydration targets with ease.
+            <a className='' href="https://www.cdc.gov/healthyweight/healthy_eating/water-and-healthier-drinks.html" target="_blank"><u>Learn more</u></a>
+        </p>
+      </footer>
     </main>
   );
 }
