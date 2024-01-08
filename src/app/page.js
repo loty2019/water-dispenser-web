@@ -189,7 +189,7 @@ export default function Home() {
         <Image src={WaterHubLogo} alt="Image" width={100} height={100} className="mr-2" />
         <h1 className="text-4xl font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">How much water did you drink today?</h1>
       </div>
-      <div className="mb-4 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto">
+      <div className="mb-4 p-5 text-center backdrop-blur-sm bg-white/10 lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto rounded-3xl">
         <section className="flex justify-evenly">
           {users.map((user, index) => (
             <div className="entry flex-row text-center mb-16" key={index}>
@@ -201,7 +201,7 @@ export default function Home() {
               <FluidMeter percentage={getSum(user) / (objectives[user.name] + 10) * 100} />
               
               <input
-                className="mt-7 w-24 border-2 bg-transparent border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white dark:placeholder-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
+                className="mt-7 w-24 border-2 bg-transparent border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white dark:placeholder-white dark:border-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
                 placeholder="Add Fluid"
                 value={inputValues[user.name] || ''}
                 onChange={(e) => handleFluidChange(e, user.name)}
@@ -213,7 +213,7 @@ export default function Home() {
                   }
                 }}
               />
-              <button className="mt-7 ml-2 w-11 text-xl bg-transparent border-2 border-black hover:bg-[#4ba9d5] bg-[#55c0F3] text-white text-center font-extrabold py-1 px-0 rounded-full transition-all duration-200" 
+              <button className="mt-7 ml-2 w-11 text-xl border-2 border-black bg-[#55c0F3] hover:bg-[#4ba9d5] text-white dark:border-white text-center font-extrabold py-1 px-0 rounded-full transition-all duration-200" 
               //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
               //onBlur={() => handleBlur(user.name)} // this is causing the button to disappear when clicked
               onClick={() => {
