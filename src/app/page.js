@@ -5,6 +5,9 @@ import FluidMeter from './components/FluidMeter'
 import { database } from './firebaseConfig'
 import Image from 'next/image';
 import WaterHubLogo from '/public/img/WaterHub.png';
+import Coffee from '/public/img/espresso.png';
+import Soda from '/public/img/soda_can.png';
+import Latte from '/public/img/latte.png';
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
@@ -36,16 +39,19 @@ function getSum(user) {
 export default function Home() {
   // Define the state variable 'users' and the function to update it 'setUsers'
   const [users, setUsers] = useState([]);
+  const [objectives, setObjectives] = useState({});
   const [accumulatedAmount, setAccumulatedAmount] = useState(0);
   const [desiredValue, setDesiredValue] = useState(0);
   const [focusStates, setFocusStates] = useState({});
   const [inputValues, setInputValues] = useState({});
-  
+  const [submitDone, setSubmitDone] = useState({});
+
+  const imgIconSize = 90;
 
   const handleFluidChange = (event, name) => {
     setInputValues({ ...inputValues, [name]: event.target.value });
     //setFluidValue(event.target.value);
-    setFocusStates({ ...focusStates, [name]: true });
+    //setFocusStates({ ...focusStates, [name]: true });
   };
 
   const handleBlur = (name) => {
@@ -55,6 +61,14 @@ export default function Home() {
     }, 500);
   };
 
+  const handleSubmitDone = (userName) => {
+    setTimeout(() => {
+      setSubmitDone({ ...submitDone, [userName]: true }); // Set it back to true after 2 seconds
+    }, 500);
+    setTimeout(() => {
+      setSubmitDone({ ...submitDone, [userName]: false }); // Set it back to true after 2 seconds
+    }, 4000);
+  };
 
   const handleFluidSubmit = (name, value) => {
     // get formatted string for the date
@@ -93,11 +107,13 @@ export default function Home() {
         console.error('Error adding fluid value to the database:', error);
       });
       setInputValues({ ...inputValues, [name]: '' });
+      handleSubmitDone(name);
   };
   
   // Fetch the data from the database when the component mounts
   useEffect(() => {
     const usersRef = ref(database, 'records');
+    const ObjectiveRef = ref(database, 'objective');
     get(usersRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
@@ -123,12 +139,29 @@ export default function Home() {
       .catch((error) => {
         console.error(error);
       });
-      
   }, []);
 
-  // [lorenzo, +{laci}]
-  // lorenzo button 1 => {lorenzo: [24], if theres no laci in firebase that date, then laci: [0]}
-  // laci button 2 => {lorenzo: [0], laci: [32]}
+  useEffect(() => {
+    // Fetch objectives data
+    const ObjectiveRef = ref(database, 'objective');
+    get(ObjectiveRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const objectivesSnapshot = snapshot.val();
+          const updatedObjectives = {};
+          users.forEach((user) => {
+            const userObjective = objectivesSnapshot[user.name];
+            updatedObjectives[user.name] = userObjective || '??';
+          });
+          setObjectives(updatedObjectives);
+        } else {
+          console.log('No snapshot data exists.');
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }, [users]);
 
   const onOptionChangeHandler = (event) => {
     switch (event.target.value) { // option1 | option2 | option3
@@ -159,17 +192,20 @@ export default function Home() {
       <div className="mb-4 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto">
         <section className="flex justify-evenly">
           {users.map((user, index) => (
-            <div className="entry text-center mb-16" key={index}>
+            <div className="entry flex-row text-center mb-16" key={index}>
               <h1 className="text-2xl md:text-4xl capitalize">{user.name}</h1>
-              <p className='font-bold  mb-2 text-blue-950 dark:text-white'>{getSum(user)} oz</p>
-              <FluidMeter percentage={getSum(user) / 125 * 100} />
+              <span className="text-sm font-semibold text-blue-950 dark:text-white">Today</span>
+              <p className='font-bold text-sm mb-2 text-blue-950 dark:text-white'>
+                <span className='font-bold text-xl'>{getSum(user)}</span>/{objectives[user.name] || '??'} oz
+              </p>
+              <FluidMeter percentage={getSum(user) / (objectives[user.name] + 10) * 100} />
               
               <input
                 className="mt-7 w-24 border-2 bg-transparent border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white dark:placeholder-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
                 placeholder="Add Fluid"
                 value={inputValues[user.name] || ''}
                 onChange={(e) => handleFluidChange(e, user.name)}
-                onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
+                //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
                 onBlur={() => handleBlur(user.name)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -177,13 +213,65 @@ export default function Home() {
                   }
                 }}
               />
+              <button className="mt-7 ml-2 w-11 text-xl bg-transparent border-2 border-black hover:bg-[#4ba9d5] bg-[#55c0F3] text-white text-center font-extrabold py-1 px-0 rounded-full transition-all duration-200" 
+              //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
+              //onBlur={() => handleBlur(user.name)} // this is causing the button to disappear when clicked
+              onClick={() => {
+                setFocusStates({ ...focusStates, [user.name]: !focusStates[user.name] });
+              }}
+              >+
+              </button>
+
               {focusStates[user.name] && (
-                <button
-                  className="ml-2 inline-block p-2 bg-[#ffffff] hover:bg-[#55C0F3] transition-all duration-200 font-semibold border-2 dark:text-black border-black rounded-full text-x"
-                  onClick={() => handleFluidSubmit(user.name, inputValues[user.name])}
-                >
-                  Submit
-                </button>
+                <div className='mt-2' >
+                <p className="text-sm font-semibold text-blue-950 dark:text-white">Click on the icons to add fluid</p>
+                <div className="flex space-x-3 p-4 justify-center mt-2 bg-[#ffffff47] rounded-xl">
+                  <div >
+                    <Image
+                      src={Coffee}
+                      alt="Coffee"
+                      width={imgIconSize} height={imgIconSize}
+                      className=""
+                      onClick={() => {
+                        handleFluidSubmit(user.name, 2);
+                        handleBlur(user.name);
+                        handleSubmitDone(user.name);
+                      }}
+                    />
+                    <span className="text-sm pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Espresso<br/>(2 oz)</span>
+                  </div>
+                  <div>
+                    <Image
+                    src={Soda}
+                    alt="Soda Can"
+                    width={imgIconSize} height={imgIconSize}
+                    className=""
+                    onClick={() => {
+                      handleFluidSubmit(user.name, 8);
+                      handleBlur(user.name);
+                    }}
+                    />
+                    <span className="text-sm pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Soda<br/>(8 oz)</span>
+                  </div>
+                  <div >
+                    <Image
+                      src={Latte}
+                      alt="Latte"
+                      width={imgIconSize} height={imgIconSize}
+                      className=""
+                      onClick={() => {
+                        handleFluidSubmit(user.name, 10);
+                        handleBlur(user.name);
+                      }}
+                    />
+                    <span className="text-sm pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Latte<br/>(10 oz)</span>
+                  </div>
+                </div>
+                </div>
+              )}
+
+              {submitDone[user.name] && (
+                <p className="text-lg pt-5 font-semibold text-blue-950 dark:text-white">Fluid added! 👍</p>
               )}
 
               </div>
@@ -204,7 +292,7 @@ export default function Home() {
       </div>
       <footer className="flex justify-center">
         <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
-            Drinking enough water is vital for our health, as it aids in maintaining body temperature, lubricating joints, and removing waste. While individual hydration needs vary, a general guideline is to consume a variety of fluids and water-rich foods daily. The virtual 2-liter water bottle is designed to help you reach these hydration targets with ease.
+            Drinking enough water is vital for our health, as it aids in maintaining body temperature, lubricating joints, and removing waste. While individual hydration needs vary, a general guideline is to consume a variety of fluids and water-rich foods daily. The virtual 2.5-liter water bottle is designed to help you reach these hydration targets with ease.
             <a className='' href="https://www.cdc.gov/healthyweight/healthy_eating/water-and-healthier-drinks.html" target="_blank"><u> Learn more</u></a>
         </p>
       </footer>
