@@ -45,8 +45,9 @@ export default function Home() {
   const [focusStates, setFocusStates] = useState({});
   const [inputValues, setInputValues] = useState({});
   const [submitDone, setSubmitDone] = useState({});
+  const [confirmationName, setConfirmationName] = useState({});
 
-  const imgIconSize = 90;
+  const imgIconSize = 70;
 
   const handleFluidChange = (event, name) => {
     setInputValues({ ...inputValues, [name]: event.target.value });
@@ -58,7 +59,7 @@ export default function Home() {
     // Set a timeout to allow click event to fire before hiding the button
     setTimeout(() => {
       setFocusStates({ ...focusStates, [name]: false });
-    }, 500);
+    }, 100);
   };
 
   const handleSubmitDone = (userName) => {
@@ -196,7 +197,7 @@ export default function Home() {
               <h1 className="text-2xl md:text-4xl capitalize">{user.name}</h1>
               <span className="text-sm font-semibold text-blue-950 dark:text-white">Today</span>
               <p className='font-bold text-sm mb-2 text-blue-950 dark:text-white'>
-                <span className='font-bold text-xl'>{getSum(user)}</span>/{objectives[user.name] || '??'} oz
+                <span className='font-bold  text-xl'>{getSum(user)}</span>/{objectives[user.name] || '??'} oz
               </p>
               <FluidMeter percentage={getSum(user) / (objectives[user.name] + 10) * 100} />
               
@@ -210,10 +211,12 @@ export default function Home() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     handleFluidSubmit(user.name, inputValues[user.name]);
+                    handleBlur(user.name);
+                    handleSubmitDone("Fluid");
                   }
                 }}
               />
-              <button className="mt-7 ml-2 w-11 text-xl border-2 border-black bg-[#55c0F3] hover:bg-[#4ba9d5] text-white dark:border-white text-center font-extrabold py-1 px-0 rounded-full transition-all duration-200" 
+              <button className="mt-4 ml-1 mr-3 w-11 text-xl border-2 border-black bg-[#55c0F3] hover:bg-[#4ba9d5] text-white dark:border-white text-center font-extrabold py-1 px-0 rounded-full transition-all duration-200" 
               //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
               //onBlur={() => handleBlur(user.name)} // this is causing the button to disappear when clicked
               onClick={() => {
@@ -224,54 +227,59 @@ export default function Home() {
 
               {focusStates[user.name] && (
                 <div className='mt-2' >
-                <p className="text-sm font-semibold text-blue-950 dark:text-white">Click on the icons to add fluid</p>
-                <div className="flex space-x-3 p-4 justify-center mt-2 bg-[#ffffff47] rounded-xl">
-                  <div >
+                <p className="text-sm font-semibold text-blue-950 dark:text-white">Click on the icon to add fluid</p>
+                <div className="grid place-items-center sm:grid-cols-3 space-x-3 p-3 pl-0 mt-2 bg-[#ffffff47] mr-3 rounded-xl">
+                  <div className="textIconWrapper"
+                    onClick={() => {
+                      handleFluidSubmit(user.name, 2); //  2 oz of water in coffee
+                      handleBlur(user.name);
+                      handleSubmitDone(user.name);
+                      setConfirmationName("Espresso");
+                    }}>
                     <Image
                       src={Coffee}
                       alt="Coffee"
                       width={imgIconSize} height={imgIconSize}
                       className=""
-                      onClick={() => {
-                        handleFluidSubmit(user.name, 2);
-                        handleBlur(user.name);
-                        handleSubmitDone(user.name);
-                      }}
                     />
-                    <span className="text-sm pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Espresso<br/>(2 oz)</span>
+                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Espresso<br/>(2 oz)</span>
                   </div>
-                  <div>
+                  <div className="textIconWrapper"
+                    onClick={() => {
+                      handleFluidSubmit(user.name, 8); // 8 oz of water in soda
+                      handleBlur(user.name);
+                      handleSubmitDone(user.name);
+                      setConfirmationName("Soda Can");
+                    }}>
                     <Image
                     src={Soda}
                     alt="Soda Can"
                     width={imgIconSize} height={imgIconSize}
                     className=""
-                    onClick={() => {
-                      handleFluidSubmit(user.name, 8);
-                      handleBlur(user.name);
-                    }}
                     />
-                    <span className="text-sm pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Soda<br/>(8 oz)</span>
+                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Soda<br/>(8 oz)</span>
                   </div>
-                  <div >
+                  <div className="textIconWrapper"
+                    onClick={() => {
+                      handleFluidSubmit(user.name, 10); // 10 oz of water in latte
+                      handleBlur(user.name);
+                      handleSubmitDone(user.name);
+                      setConfirmationName("Latte");
+                    }}>
                     <Image
                       src={Latte}
                       alt="Latte"
                       width={imgIconSize} height={imgIconSize}
                       className=""
-                      onClick={() => {
-                        handleFluidSubmit(user.name, 10);
-                        handleBlur(user.name);
-                      }}
                     />
-                    <span className="text-sm pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Latte<br/>(10 oz)</span>
+                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Latte<br/>(10 oz)</span>
                   </div>
                 </div>
                 </div>
               )}
 
               {submitDone[user.name] && (
-                <p className="text-lg pt-5 font-semibold text-blue-950 dark:text-white">Fluid added! 👍</p>
+                <p className="text-lg text-left pt-5 font-semibold text-blue-950 dark:text-white"> <span className= "font-extrabold">{confirmationName}</span> added! 👍<br/>Keep Drinking!</p>
               )}
 
               </div>
