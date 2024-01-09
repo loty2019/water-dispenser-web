@@ -3,6 +3,9 @@ import Head from 'next/head'
 import { ThemeSwitcher } from './components/ThemeSwitcher'
 import './globals.css'
 import { ThemeProvider } from './theme-provider'
+import Link from 'next/link'
+import Image from 'next/image';
+import Settings from '/public/img/settingImg.png';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,7 +28,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${inter.className}`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <canvas
             id="gradient-canvas"
             className="fixed inset-0 -z-10"

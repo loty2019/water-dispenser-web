@@ -8,6 +8,8 @@ import WaterHubLogo from '/public/img/WaterHub.png';
 import Coffee from '/public/img/espresso.png';
 import Soda from '/public/img/soda_can.png';
 import Latte from '/public/img/latte.png';
+import Settings from '/public/img/settingImg.png';
+import Link from 'next/link';
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
@@ -184,11 +186,22 @@ export default function Home() {
 // <input className="mt-7 bg-transparent border border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white text-center font-bold py-2 rounded-full transition-all duration-200 placeholder-black" placeholder="Add Fluid"></input>
 
   return (
-    <main className=" min-h-screen p-4 lg:p-24 flex-col space-y-10">
-
-      <div className="flex items-center justify-center">
-        <Image src={WaterHubLogo} alt="Image" width={100} height={100} className="mr-2" />
-        <h1 className="text-4xl font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">How much water did you drink today?</h1>
+    <main className=" min-h-screen p-4 pt-1.5 lg:p-24 flex-col space-y-7">
+      <div className="absolute p-0 right-12 top-2 hover:scale-110 active:scale-100 duration-200">
+        <Link href="/settings">
+              <Image 
+              src={Settings} 
+              alt="settings" 
+              width={32} height={32} 
+              className="bg-slate-600 p-1 rounded-md hover:ease-in-out duration-300"
+              
+              />
+            </Link>
+      </div>
+      <div className="flex items-center p-2 justify-center">
+        <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className="mr-2" />
+        <h1 className="text-4xl font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">How much water did you drink today?
+        </h1>
       </div>
       <div className="mb-4 p-5 text-center backdrop-blur-sm bg-white/10 lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto rounded-3xl">
         <section className="flex justify-evenly">
@@ -213,7 +226,8 @@ export default function Home() {
                     if (e.key === 'Enter') {
                       handleFluidSubmit(user.name, inputValues[user.name]);
                       handleBlur(user.name);
-                      handleSubmitDone("Fluid");
+                      handleSubmitDone(user.name);
+                      setConfirmationName(inputValues[user.name] + "oz of fluid");
                     }
                   }}
                 />
@@ -230,7 +244,7 @@ export default function Home() {
               {focusStates[user.name] && (
                 <div className='mt-2' >
                 <p className="text-sm font-semibold text-blue-950 dark:text-white">Click on the icon to add fluid</p>
-                <div className="grid overflow-hidden place-items-center min-w-20 sm:grid-cols-3 space-x-3 p-3 pl-0 mt-2 bg-[#ffffff47] mr-3 rounded-xl">
+                <div className="grid overflow-hidden place-items-center min-w-20 gap-6 sm:grid-cols-3 space-x-3 p-3 pl-0 mt-2 bg-[#ffffff47] mr-3 rounded-xl">
                   <div className="textIconWrapper"
                     onClick={() => {
                       handleFluidSubmit(user.name, 2); //  2 oz of water in coffee

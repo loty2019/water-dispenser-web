@@ -26,7 +26,7 @@ html {
   border-radius: 1rem; /* or use 'rounded-xl' if preferred */
   padding: 0.5rem;
   /* wrap */
-  min-width: 8.5rem;
+  min-width: 9rem;
   text-wrap: nowrap;
   transition: all 0.2s ease-in-out;
 }
