@@ -194,7 +194,6 @@ export default function Home() {
               alt="settings" 
               width={32} height={32} 
               className="bg-slate-600 p-1 rounded-md hover:ease-in-out duration-300"
-              
               />
             </Link>
       </div>
@@ -207,7 +206,7 @@ export default function Home() {
         <section className="flex justify-evenly">
           {users.map((user, index) => (
             <div className="entry flex-row text-center mb-16" key={index}>
-              <h1 className="text-2xl md:text-4xl capitalize">{user.name}</h1>
+              <h1 className="text-2xl font-bold md:text-4xl capitalize">{user.name}</h1>
               <span className="text-sm font-semibold text-blue-950 dark:text-white">Today</span>
               <p className='font-bold text-sm mb-2 text-blue-950 dark:text-white'>
                 <span className='font-bold  text-xl'>{getSum(user)}</span>/{objectives[user.name] || '??'} oz
@@ -303,7 +302,7 @@ export default function Home() {
         </section>
 
         <section className='text-center mx-auto'>
-          <div className= 'border-black border-2 p-2 inline-block rounded-md'>
+          <div className= 'border-black dark:border-white border-2 p-2 inline-block rounded-md'>
             <p className='text-center inline-block font-bold text-xl'>Total ever drank: {desiredValue}</p>
             <select className='ml-2 inline-block font-semibold border border-black rounded-sm text-xl bg-transparent' onChange={onOptionChangeHandler}>
               <option value="option1">gallons</option>
@@ -316,7 +315,7 @@ export default function Home() {
       </div>
       <footer className="flex justify-center">
         <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
-            Drinking enough water is vital for our health, as it aids in maintaining body temperature, lubricating joints, and removing waste. While individual hydration needs vary, a general guideline is to consume a variety of fluids and water-rich foods daily. The virtual 2.5-liter water bottle is designed to help you reach these hydration targets with ease.
+            Drinking enough water is vital for our health, as it aids in maintaining body temperature, lubricating joints, and removing waste. While individual hydration needs vary, a general guideline is to consume a variety of fluids and water-rich foods daily. The virtual dynamic water bottle is designed to help you reach these hydration targets with ease.
             <a className='' href="https://www.cdc.gov/healthyweight/healthy_eating/water-and-healthier-drinks.html" target="_blank"><u> Learn more</u></a>
         </p>
       </footer>
