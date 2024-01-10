@@ -9,6 +9,7 @@ import Coffee from '/public/img/espresso.png';
 import Soda from '/public/img/soda_can.png';
 import Latte from '/public/img/latte.png';
 import Settings from '/public/img/settingImg.png';
+import Reload from '/public/img/reload.png';
 import Link from 'next/link';
 
 // Function to extract users for today
@@ -183,19 +184,29 @@ export default function Home() {
     }
   };
   
-// <input className="mt-7 bg-transparent border border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white text-center font-bold py-2 rounded-full transition-all duration-200 placeholder-black" placeholder="Add Fluid"></input>
-
+// over:scale-110 active:scale-100 duration-200
   return (
     <main className=" min-h-screen p-4 pt-1.5 lg:p-24 flex-col space-y-7">
-      <div className="absolute p-0 right-12 top-2 hover:scale-110 active:scale-100 duration-200">
-        <Link href="/settings">
-              <Image 
-              src={Settings} 
-              alt="settings" 
-              width={32} height={32} 
-              className="bg-slate-600 p-1 rounded-md hover:ease-in-out duration-300"
-              />
-            </Link>
+      <div className="absolute p-0 right-12 top-2 flex flex-row-reverse items-center justify-center">
+        <div className='hover:scale-110 active:scale-100 duration-200'>
+          <Link href="/settings">
+            <Image 
+            src={Settings} 
+            alt="settings" 
+            width={32} height={32} 
+            className="bg-slate-600 p-1 rounded-md hover:ease-in-out duration-300"
+            />
+          </Link>
+        </div>
+        <div className='hover:scale-110 active:scale-100 duration-200'>
+          <Image 
+            src={Reload} 
+            alt="settings" 
+            width={32} height={32} 
+            className="bg-slate-600 mr-2 p-1.5 rounded-md hover:ease-in-out duration-300"
+            onClick={() => {window.location.reload(true)}}
+          />
+        </div> 
       </div>
       <div className="flex items-center p-2 justify-center">
         <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className="mr-2" />
