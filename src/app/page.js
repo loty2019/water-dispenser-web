@@ -3,14 +3,21 @@ import { get, ref, push, set } from 'firebase/database'
 import { useEffect, useState } from 'react'
 import FluidMeter from './components/FluidMeter'
 import { database } from './firebaseConfig'
+import Link from 'next/link'; // Linking to other pages
 import Image from 'next/image';
+// import of images
 import WaterHubLogo from '/public/img/WaterHub.png';
 import Coffee from '/public/img/espresso.png';
 import Soda from '/public/img/soda_can.png';
 import Latte from '/public/img/latte.png';
+import Beer from '/public/img/beer.png';
+import GlassOfWater from '/public/img/glassOfWater.png';
+import WaterBottle from '/public/img/waterBottle.png';
+import WineGlass from '/public/img/wine.png';
 import Settings from '/public/img/settingImg.png';
 import Reload from '/public/img/reload.png';
-import Link from 'next/link';
+
+import "./mainStyle.css"; // Importing css file
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
@@ -189,7 +196,7 @@ export default function Home() {
     <main className=" min-h-screen p-4 pt-1.5 lg:p-24 flex-col space-y-7">
       <div className="absolute p-0 right-12 top-2 flex flex-row-reverse items-center justify-center">
         <div className='hover:scale-110 active:scale-100 duration-200'>
-          <Link href="/settings">
+          <Link href="./dashboard">
             <Image 
             src={Settings} 
             alt="settings" 
@@ -225,36 +232,21 @@ export default function Home() {
               <FluidMeter percentage={getSum(user) / (objectives[user.name] + 10) * 100} />
               
               <div className="flex items-baseline justify-center">
-                <input
-                  className="mt-7 w-24 border-2 bg-transparent border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white dark:placeholder-white dark:border-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
-                  placeholder="Add Fluid"
-                  value={inputValues[user.name] || ''}
-                  onChange={(e) => handleFluidChange(e, user.name)}
-                  //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
-                  onBlur={() => handleBlur(user.name)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleFluidSubmit(user.name, inputValues[user.name]);
-                      handleBlur(user.name);
-                      handleSubmitDone(user.name);
-                      setConfirmationName(inputValues[user.name] + "oz of fluid");
-                    }
-                  }}
-                />
-                <button className="mt-4 ml-1 mr-3 w-11 text-xl border-2 border-black bg-[#55c0F3] hover:bg-[#4ba9d5] text-white dark:border-white text-center font-extrabold py-1 px-0 rounded-full transition-all duration-200" 
+                
+                <button className="mt-4 text-lg border-2 border-black bg-[#55c0F3] hover:bg-[#4ba9d5] text-white dark:border-white text-center font-extrabold py-1 px-2 rounded-full transition-all duration-200" 
                 //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
                 //onBlur={() => handleBlur(user.name)} // this is causing the button to disappear when clicked
                 onClick={() => {
                   setFocusStates({ ...focusStates, [user.name]: !focusStates[user.name] });
                 }}
-                >+
+                >Options +
                 </button>
               </div>
 
               {focusStates[user.name] && (
                 <div className='mt-2' >
                 <p className="text-sm font-semibold text-blue-950 dark:text-white">Click on the icon to add fluid</p>
-                <div className="grid overflow-hidden place-items-center min-w-20 gap-6 sm:grid-cols-3 space-x-3 p-3 pl-0 mt-2 bg-[#ffffff47] mr-3 rounded-xl">
+                <div className="grid overflow-hidden justify-center place-items-center min-w-20 gap-6 sm:grid-cols-3 space-x-3 p-3 pl-0 mt-2 bg-[#ffffff47] mr-3 rounded-xl">
                   <div className="textIconWrapper"
                     onClick={() => {
                       handleFluidSubmit(user.name, 2); //  2 oz of water in coffee
@@ -272,21 +264,6 @@ export default function Home() {
                   </div>
                   <div className="textIconWrapper"
                     onClick={() => {
-                      handleFluidSubmit(user.name, 8); // 8 oz of water in soda
-                      handleBlur(user.name);
-                      handleSubmitDone(user.name);
-                      setConfirmationName("Soda Can");
-                    }}>
-                    <Image
-                    src={Soda}
-                    alt="Soda Can"
-                    width={imgIconSize} height={imgIconSize}
-                    className=""
-                    />
-                    <span className="text-sm text-nowrap sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Soda<br/>(8 oz)</span>
-                  </div>
-                  <div className="textIconWrapper"
-                    onClick={() => {
                       handleFluidSubmit(user.name, 10); // 10 oz of water in latte
                       handleBlur(user.name);
                       handleSubmitDone(user.name);
@@ -300,12 +277,105 @@ export default function Home() {
                     />
                     <span className="text-sm  sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Latte<br/>(10 oz)</span>
                   </div>
+                  <div className="textIconWrapper"
+                    onClick={() => {
+                      handleFluidSubmit(user.name, 8); // 8 oz of water in soda
+                      handleBlur(user.name);
+                      handleSubmitDone(user.name);
+                      setConfirmationName("Soda Can");
+                    }}>
+                    <Image
+                    src={Soda}
+                    alt="Soda Can"
+                    width={imgIconSize} height={imgIconSize}
+                    className=""
+                    />
+                    <span className="text-sm text-nowrap sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Soda<br/>(8 oz)</span>
+                  </div>
+                  
+                  <div className="textIconWrapper"
+                    onClick={() => {
+                      handleFluidSubmit(user.name, 16); // 16 oz of beer in a pint 
+                      handleBlur(user.name);
+                      handleSubmitDone(user.name);
+                      setConfirmationName("Beer Pint");
+                    }}>
+                    <Image
+                      src={Beer}
+                      alt="Beer"
+                      width={imgIconSize} height={imgIconSize}
+                      className=""
+                    />
+                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Beer Pint<br/>(16 oz) </span>
+                  </div>
+                  <div className="textIconWrapper"
+                    onClick={() => {
+                      handleFluidSubmit(user.name, 5); // 5 oz in a glass of wine
+                      handleBlur(user.name);
+                      handleSubmitDone(user.name);
+                      setConfirmationName("Glass of Wine");
+                    }}>
+                    <Image
+                      src={WineGlass}
+                      alt="Glass of Wine"
+                      width={imgIconSize} height={imgIconSize}
+                      className=""
+                    />
+                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Glass of Wine<br/>(5 oz) </span>
+                  </div>
+                  <div className="textIconWrapper"
+                    onClick={() => {
+                      handleFluidSubmit(user.name, 8); //  8 oz in a glass of water
+                      handleBlur(user.name);
+                      handleSubmitDone(user.name);
+                      setConfirmationName("Glass of Water");
+                    }}>
+                    <Image
+                      src={GlassOfWater}
+                      alt="Glass of Water"
+                      width={60} height={60}
+                      className=""
+                    />
+                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Glass of Water<br/>(8 oz) </span>
+                  </div>
+                  <div className="textIconWrapper"
+                    onClick={() => {
+                      handleFluidSubmit(user.name, 17); //  17 oz in a water bottle
+                      handleBlur(user.name);
+                      handleSubmitDone(user.name);
+                      setConfirmationName("Water Bottle");
+                    }}>
+                    <Image
+                      src={WaterBottle}
+                      alt="Water Bottle"
+                      width={imgIconSize} height={imgIconSize}
+                      className=""
+                    />
+                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Water Bottle<br/>(17 oz) </span>
+                  </div>
+                  <input
+                  className="mt-7 w-24 border-2 bg-transparent border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white dark:placeholder-white dark:border-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
+                  placeholder="Add Fluid"
+                  value={inputValues[user.name] || ''}
+                  onChange={(e) => handleFluidChange(e, user.name)}
+                  //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
+                  onBlur={() => handleBlur(user.name)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleFluidSubmit(user.name, inputValues[user.name]);
+                      handleBlur(user.name);
+                      handleSubmitDone(user.name);
+                      setConfirmationName(inputValues[user.name] + "oz of fluid");
+                    }
+                  }}
+                />
                 </div>
                 </div>
               )}
 
               {submitDone[user.name] && (
-                <p className="text-lg text-left pt-5 font-semibold text-blue-950 dark:text-white"> <span className= "font-extrabold">{confirmationName}</span> added! 👍<br/>Keep Drinking!</p>
+                <p className="text-lg text-left pt-5 font-semibold text-blue-950 dark:text-white"> 
+                <span className= "font-extrabold">{confirmationName}</span> added! 👍<br/>Keep Drinking!</p>
               )}
 
               </div>
