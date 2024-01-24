@@ -34,7 +34,7 @@ export const ThemeSwitcher = () => {
 
   return (
     <button
-      className={`w-fit absolute right-2 top-2 p-2 rounded-md hover:scale-110 active:scale-100 duration-200 bg-slate-600 dark:bg-[#cfd3da]`}
+      className={`w-fit absolute right-3 top-3  p-2  scale-125 rounded-md hover:scale-150 active:scale-100 duration-200 bg-slate-600 dark:bg-[#cfd3da]`}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       {theme === "light" ?

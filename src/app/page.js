@@ -16,6 +16,7 @@ import WaterBottle from '/public/img/waterBottle.png';
 import WineGlass from '/public/img/wine.png';
 import Settings from '/public/img/settingImg.png';
 import Reload from '/public/img/reload.png';
+import NewUser from '/public/img/newUser.png';
 
 import "./mainStyle.css"; // Importing css file
 
@@ -191,34 +192,44 @@ export default function Home() {
     }
   };
   
-// over:scale-110 active:scale-100 duration-200
   return (
-    <main className=" min-h-screen p-4 pt-1.5 lg:p-24 flex-col space-y-7">
-      <div className="absolute p-0 right-12 top-2 flex flex-row-reverse items-center justify-center">
-        <div className='hover:scale-110 active:scale-100 duration-200'>
+    <main className=" min-h-screen p-4 lg:p-14 flex-col">
+      <div className="absolute p-0 right-16 top-3 flex flex-row-reverse items-center justify-center">
+        <div className='scale-125 hover:scale-150 duration-200'>
           <Link href="./dashboard">
             <Image 
             src={Settings} 
             alt="settings" 
             width={32} height={32} 
-            className="bg-slate-600 p-1 rounded-md hover:ease-in-out duration-300"
+            className="bg-slate-600 p-1 rounded-md"
             />
           </Link>
         </div>
-        <div className='hover:scale-110 active:scale-100 duration-200'>
+        <div className='scale-125 hover:scale-150 duration-200 cursor-pointer'>
           <Image 
             src={Reload} 
-            alt="settings" 
+            alt="Reload" 
             width={32} height={32} 
-            className="bg-slate-600 mr-2 p-1.5 rounded-md hover:ease-in-out duration-300"
+            className="bg-slate-600 mr-5 p-1.5 rounded-md"
             onClick={() => {window.location.reload(true)}}
           />
         </div> 
       </div>
-      <div className="flex items-center p-2 justify-center">
-        <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className="mr-2" />
-        <h1 className="text-4xl font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">How much water did you drink today?
-        </h1>
+      <div className="flex mt-8 sm:mt-4 items-center p-2 justify-center"> 
+        <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className=" mt-6 mr-4" />
+        <h1 className="text-4xl  font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">How much water did you drink today?</h1>
+      </div>
+      <div className="flex mb-2 items-center p-2 justify-center">
+        <div className='scale-110 hover:scale-125 duration-200 cursor-pointer'>
+            <Image 
+              src={NewUser} 
+              alt="new user" 
+              width={35} height={35} 
+              className="bg-slate-600 mr-2 p-1.5 rounded-md"
+              onClick={() => {}}
+            />
+          </div> 
+        <h1 className="text-lg font-sans font-bold text-blue-950 dark:text-white">Register</h1>
       </div>
       <div className="mb-4 p-5 text-center backdrop-blur-sm bg-white/10 lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto rounded-3xl">
         <section className="flex justify-evenly">
@@ -232,21 +243,23 @@ export default function Home() {
               <FluidMeter percentage={getSum(user) / (objectives[user.name] + 10) * 100} />
               
               <div className="flex items-baseline justify-center">
-                
-                <button className="mt-4 text-lg border-2 border-black bg-[#55c0F3] hover:bg-[#4ba9d5] text-white dark:border-white text-center font-extrabold py-1 px-2 rounded-full transition-all duration-200" 
+  
+                <button className="mt-4 z-10 text-lg border-2 border-black bg-[#55c0F3] hover:bg-[#4ba9d5] text-white dark:border-white text-center font-extrabold py-1 px-2 rounded-xl transition-all duration-200 " 
                 //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
                 //onBlur={() => handleBlur(user.name)} // this is causing the button to disappear when clicked
                 onClick={() => {
                   setFocusStates({ ...focusStates, [user.name]: !focusStates[user.name] });
                 }}
-                >Options +
+                >More +
                 </button>
+                <ping className="absolute mt-5 w-14 z-0 h-8 bg-[#2a7892] rounded-xl transition-all duration-200 animate-ping " />
               </div>
 
               {focusStates[user.name] && (
                 <div className='mt-2' >
                 <p className="text-sm font-semibold text-blue-950 dark:text-white">Click on the icon to add fluid</p>
-                <div className="grid overflow-hidden justify-center place-items-center min-w-20 gap-6 sm:grid-cols-3 space-x-3 p-3 pl-0 mt-2 bg-[#ffffff47] mr-3 rounded-xl">
+                <div className="bg-[#ffffff47] rounded-xl transition-all duration-700">
+                  <div className="grid  overflow-hidden justify-center place-items-center min-w-25 gap-8 grid-cols-2 sm:grid-cols-3 p-3 mt-2">
                   <div className="textIconWrapper"
                     onClick={() => {
                       handleFluidSubmit(user.name, 2); //  2 oz of water in coffee
@@ -275,7 +288,7 @@ export default function Home() {
                       width={imgIconSize} height={imgIconSize}
                       className=""
                     />
-                    <span className="text-sm  sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Latte<br/>(10 oz)</span>
+                    <span className="text-sm text-nowrap sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Latte<br/>(10 oz)</span>
                   </div>
                   <div className="textIconWrapper"
                     onClick={() => {
@@ -306,7 +319,7 @@ export default function Home() {
                       width={imgIconSize} height={imgIconSize}
                       className=""
                     />
-                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Beer Pint<br/>(16 oz) </span>
+                    <span className="text-sm text-nowrap sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Beer Pint<br/>(16 oz) </span>
                   </div>
                   <div className="textIconWrapper"
                     onClick={() => {
@@ -321,7 +334,7 @@ export default function Home() {
                       width={imgIconSize} height={imgIconSize}
                       className=""
                     />
-                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Glass of Wine<br/>(5 oz) </span>
+                    <span className="text-sm text-nowrap sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight wrap">Glass of Wine<br/>(5 oz) </span>
                   </div>
                   <div className="textIconWrapper"
                     onClick={() => {
@@ -336,7 +349,7 @@ export default function Home() {
                       width={60} height={60}
                       className=""
                     />
-                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Glass of Water<br/>(8 oz) </span>
+                    <span className="text-sm text-nowrap sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Glass of Water<br/>(8 oz) </span>
                   </div>
                   <div className="textIconWrapper"
                     onClick={() => {
@@ -351,11 +364,11 @@ export default function Home() {
                       width={imgIconSize} height={imgIconSize}
                       className=""
                     />
-                    <span className="text-sm sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Water Bottle<br/>(17 oz) </span>
+                    <span className="text-sm text-wrap sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white block leading-tight">Water Bottle<br/>(17 oz) </span>
                   </div>
                   <input
-                  className="mt-7 w-24 border-2 bg-transparent border-black hover:bg-[#55C0F3] focus:bg-[#55c0F3] text-white dark:placeholder-white dark:border-white text-center font-bold py-2 px-2 rounded-full transition-all duration-200 placeholder-black"
-                  placeholder="Add Fluid"
+                  className="w-24 border-2 border-black bg-[#55C0F3] hover:bg-[#47a5d1] focus:bg-[#55c0F3] text-white dark:placeholder-white dark:border-white text-center font-bold py-2 px-2 rounded-xl transition-all duration-200 placeholder-white"
+                  placeholder="Custom"
                   value={inputValues[user.name] || ''}
                   onChange={(e) => handleFluidChange(e, user.name)}
                   //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
@@ -371,6 +384,7 @@ export default function Home() {
                 />
                 </div>
                 </div>
+                </div>
               )}
 
               {submitDone[user.name] && (
@@ -383,7 +397,7 @@ export default function Home() {
         </section>
 
         <section className='text-center mx-auto'>
-          <div className= 'border-black dark:border-white border-2 p-2 inline-block rounded-md'>
+          <div className= 'border-black dark:border-white border-2 p-2 inline-block rounded-lg'>
             <p className='text-center inline-block font-bold text-xl'>Total ever drank: {desiredValue}</p>
             <select className='ml-2 inline-block font-semibold border border-black rounded-sm text-xl bg-transparent' onChange={onOptionChangeHandler}>
               <option value="option1">gallons</option>
