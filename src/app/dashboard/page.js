@@ -23,7 +23,7 @@ export default function Page() {
             onClick={() => {window.location.reload(true)}}
           />
         </div>  
-
+        
         <div className="flex flex-col items-center mt-10 p-2 justify-center">
           <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className="mr-2" />
           <h1 className="text-4xl font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">Settings</h1>

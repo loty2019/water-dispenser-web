@@ -57,10 +57,7 @@ export default function Home() {
   const [inputValues, setInputValues] = useState({});
   const [submitDone, setSubmitDone] = useState({});
   const [confirmationName, setConfirmationName] = useState({});
-  const [newUser, setNewUser] = useState(false);
-  const [username, setUsername] = useState('');
-  const [objective, setObjective] = useState('');
-  const [password, setPassword] = useState('');
+  
 
   const imgIconSize = 70;
 
@@ -196,23 +193,6 @@ export default function Home() {
         break;
     }
   };
-
-  const newUserHandler = (e) => {
-    // set on firebase the new user under the path 'users/username'
-    const newUserRef = ref(database, `users/${username}`); 
-    set(newUserRef, { objective: parseInt(objective), password: password })
-      .then(() => {
-        console.log('New user added to the database');
-      })
-      .catch((error) => {
-        console.error('Error adding new user to the database:', error);
-      });
-    
-    handleFluidSubmit(username, 0);
-    setNewUser(!newUser);
-    // reload the page
-    window.location.reload(true);
-  };
   
   return (
     <main className=" min-h-screen p-4 lg:p-14 flex-col">
@@ -227,7 +207,7 @@ export default function Home() {
             />
           </Link>
         </div>
-        <div className='scale-125 hover:scale-150 duration-200 cursor-pointer'>
+        <div className='scale-125 hover:scale-150 duration-200  cursor-wait'>
           <Image 
             src={Reload} 
             alt="Reload" 
@@ -241,60 +221,19 @@ export default function Home() {
         <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className=" mt-6 mr-4" />
         <h1 className="text-4xl font-sans text-center font-bold lg:mt-0 text-blue-950 dark:text-white">How much water did you drink today?</h1>
       </div>
-      <div className="flex mb-2 items-center p-2 justify-center">
+      <div className="flex mb-6 items-center p-2 justify-center">
         <div className='scale-110 hover:scale-125 duration-200 cursor-pointer'>
+            <Link href="./signup">
             <Image 
               src={NewUser} 
               alt="new user" 
               width={30} height={30} 
               className="bg-slate-600 mr-2 p-1 rounded-md"
-              onClick={() => {setNewUser(!newUser)}}
             />
+            </Link>
           </div> 
         <h1 className="text-lg font-sans font-bold text-blue-950 dark:text-white">Register</h1>
       </div>
-      {newUser && (
-         <div className="flex flex-col mb-2 items-center p-2 justify-center">
-         <label htmlFor="username">
-           <input
-             type="text"
-             id="username"
-             className="bg-gray-50 border mb-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-             placeholder="Name"
-             value={username}
-             onChange={(e) => setUsername(e.target.value.toLowerCase())}
-           />
-         </label>
-         <label htmlFor="objective">
-           <input
-             type="number"
-             id="objective"
-             className="bg-gray-50 border mb-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-             placeholder="Objective"
-             value={objective}
-             onChange={(e) => setObjective(e.target.value)}
-           />
-         </label>
-         <label htmlFor="password">
-           <input
-             type="password"
-             id="password"
-             className="bg-gray-50 border mb-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-             placeholder="Password"
-             required
-             value={password}
-             onChange={(e) => setPassword(e.target.value)}
-           />
-         </label>
-         <button
-           type="submit"
-           className="text-white font-extrabold  bg-[#426eff] hover:bg-[#479fc8] hover:scale-110 duration-200 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-fit sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-           onClick={newUserHandler}
-         >
-           Submit
-         </button>
-       </div>
-      )}
       <div className="mb-4 p-5 text-center backdrop-blur-sm bg-white/10 lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto rounded-3xl">
         <section className="grid grid-cols-2 justify-evenly">
           {users.map((user, index) => (
@@ -472,7 +411,7 @@ export default function Home() {
           </div>
         </section>
       </div>
-      <footer className="flex justify-center">
+      <footer className="flex justify-center mt-4">
         <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
             Drinking enough water is vital for our health, as it aids in maintaining body temperature, lubricating joints, and removing waste. While individual hydration needs vary, a general guideline is to consume a variety of fluids and water-rich foods daily. The virtual dynamic water bottle is designed to help you reach these hydration targets with ease.
             <a className='' href="https://www.cdc.gov/healthyweight/healthy_eating/water-and-healthier-drinks.html" target="_blank"><u> Learn more</u></a>
