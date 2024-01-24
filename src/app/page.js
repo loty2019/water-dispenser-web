@@ -158,16 +158,17 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Fetch objectives data
-    const ObjectiveRef = ref(database, 'objective'); // TODO: change this to the correct path
-    get(ObjectiveRef)
+    // Fetch users data
+    const usersRef = ref(database, 'users'); 
+    get(usersRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
-          const objectivesSnapshot = snapshot.val();
+          const usersSnapshot = snapshot.val();
           const updatedObjectives = {};
-          users.forEach((user) => {
-            const userObjective = objectivesSnapshot[user.name];
-            updatedObjectives[user.name] = userObjective || '??';
+          Object.keys(usersSnapshot).forEach((userName) => {
+            // Assuming that each user object has an 'objective' field
+            const userObjective = usersSnapshot[userName].objective;
+            updatedObjectives[userName] = userObjective || '??';
           });
           setObjectives(updatedObjectives);
         } else {
@@ -199,23 +200,14 @@ export default function Home() {
   const newUserHandler = (e) => {
     // set on firebase the new user under the path 'users/username'
     const newUserRef = ref(database, `users/${username}`); 
-    set(newUserRef, { password: password })
+    set(newUserRef, { objective: parseInt(objective), password: password })
       .then(() => {
         console.log('New user added to the database');
       })
       .catch((error) => {
         console.error('Error adding new user to the database:', error);
       });
-
-    // set on firebase the new objective under the path 'objective/username'
-    set(ref(database, `objective/${username}`), parseInt(objective))
-      .then(() => {
-        console.log('New objective added to the database');
-      })
-      .catch((error) => {
-        console.error('Error adding new objective to the database:', error);
-      });
-      
+    
     handleFluidSubmit(username, 0);
     setNewUser(!newUser);
     // reload the page
