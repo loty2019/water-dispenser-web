@@ -411,12 +411,12 @@ export default function Home() {
           </div>
         </section>
       </div>
-      <footer className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4">
         <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
             Drinking enough water is vital for our health, as it aids in maintaining body temperature, lubricating joints, and removing waste. While individual hydration needs vary, a general guideline is to consume a variety of fluids and water-rich foods daily. The virtual dynamic water bottle is designed to help you reach these hydration targets with ease.
             <a className='' href="https://www.cdc.gov/healthyweight/healthy_eating/water-and-healthier-drinks.html" target="_blank"><u> Learn more</u></a>
         </p>
-      </footer>
+      </div>
     </main>
   );
 }

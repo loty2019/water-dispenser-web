@@ -143,6 +143,12 @@ export default function Page() {
          </button>
         </div>
         </div>
+        <div className="flex justify-center mt-4">
+        <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
+            Daily water intake is calculated based on your weight and exercise.
+            <a className='' href="https://www.wku.edu/news/articles/index.php?view=article&articleid=2762&return=archive" target="_blank"><u> Learn more about how</u></a>
+        </p>
+      </div>
       </main>
     );
 }
