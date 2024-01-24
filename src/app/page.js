@@ -57,6 +57,10 @@ export default function Home() {
   const [inputValues, setInputValues] = useState({});
   const [submitDone, setSubmitDone] = useState({});
   const [confirmationName, setConfirmationName] = useState({});
+  const [newUser, setNewUser] = useState(false);
+  const [username, setUsername] = useState('');
+  const [objective, setObjective] = useState('');
+  const [password, setPassword] = useState('');
 
   const imgIconSize = 70;
 
@@ -155,7 +159,7 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch objectives data
-    const ObjectiveRef = ref(database, 'objective');
+    const ObjectiveRef = ref(database, 'objective'); // TODO: change this to the correct path
     get(ObjectiveRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
@@ -191,6 +195,32 @@ export default function Home() {
         break;
     }
   };
+
+  const newUserHandler = (e) => {
+    // set on firebase the new user under the path 'users/username'
+    const newUserRef = ref(database, `users/${username}`); 
+    set(newUserRef, { password: password })
+      .then(() => {
+        console.log('New user added to the database');
+      })
+      .catch((error) => {
+        console.error('Error adding new user to the database:', error);
+      });
+
+    // set on firebase the new objective under the path 'objective/username'
+    set(ref(database, `objective/${username}`), parseInt(objective))
+      .then(() => {
+        console.log('New objective added to the database');
+      })
+      .catch((error) => {
+        console.error('Error adding new objective to the database:', error);
+      });
+      
+    handleFluidSubmit(username, 0);
+    setNewUser(!newUser);
+    // reload the page
+    window.location.reload(true);
+  };
   
   return (
     <main className=" min-h-screen p-4 lg:p-14 flex-col">
@@ -215,24 +245,66 @@ export default function Home() {
           />
         </div> 
       </div>
-      <div className="flex mt-8 sm:mt-4 items-center p-2 justify-center"> 
+      <div className="flex flex-col sm:flex-row mt-8 sm:mt-4 items-center p-2 justify-center"> 
         <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className=" mt-6 mr-4" />
-        <h1 className="text-4xl  font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">How much water did you drink today?</h1>
+        <h1 className="text-4xl font-sans text-center font-bold lg:mt-0 text-blue-950 dark:text-white">How much water did you drink today?</h1>
       </div>
       <div className="flex mb-2 items-center p-2 justify-center">
         <div className='scale-110 hover:scale-125 duration-200 cursor-pointer'>
             <Image 
               src={NewUser} 
               alt="new user" 
-              width={35} height={35} 
-              className="bg-slate-600 mr-2 p-1.5 rounded-md"
-              onClick={() => {}}
+              width={30} height={30} 
+              className="bg-slate-600 mr-2 p-1 rounded-md"
+              onClick={() => {setNewUser(!newUser)}}
             />
           </div> 
         <h1 className="text-lg font-sans font-bold text-blue-950 dark:text-white">Register</h1>
       </div>
+      {newUser && (
+         <div className="flex flex-col mb-2 items-center p-2 justify-center">
+         <label htmlFor="username">
+           <input
+             type="text"
+             id="username"
+             className="bg-gray-50 border mb-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+             placeholder="Name"
+             value={username}
+             onChange={(e) => setUsername(e.target.value)}
+           />
+         </label>
+         <label htmlFor="objective">
+           <input
+             type="number"
+             id="objective"
+             className="bg-gray-50 border mb-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+             placeholder="Objective"
+             value={objective}
+             onChange={(e) => setObjective(e.target.value)}
+           />
+         </label>
+         <label htmlFor="password">
+           <input
+             type="password"
+             id="password"
+             className="bg-gray-50 border mb-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+             placeholder="Password"
+             required
+             value={password}
+             onChange={(e) => setPassword(e.target.value)}
+           />
+         </label>
+         <button
+           type="submit"
+           className="text-white font-extrabold  bg-[#426eff] hover:bg-[#479fc8] hover:scale-110 duration-200 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-fit sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+           onClick={newUserHandler}
+         >
+           Submit
+         </button>
+       </div>
+      )}
       <div className="mb-4 p-5 text-center backdrop-blur-sm bg-white/10 lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto rounded-3xl">
-        <section className="flex justify-evenly">
+        <section className="grid grid-cols-2 justify-evenly">
           {users.map((user, index) => (
             <div className="entry flex-row text-center mb-16" key={index}>
               <h1 className="text-2xl font-bold md:text-4xl capitalize">{user.name}</h1>
@@ -252,7 +324,7 @@ export default function Home() {
                 }}
                 >More +
                 </button>
-                <ping className="absolute mt-5 w-14 z-0 h-8 bg-[#2a7892] rounded-xl transition-all duration-200 animate-ping " />
+                <div className="absolute mt-5 w-14 z-0 h-8 bg-[#2a7892] rounded-xl transition-all duration-200 animate-ping " />
               </div>
 
               {focusStates[user.name] && (
