@@ -1,0 +1,18 @@
+.textIconWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  place-items: center;
+  border-radius: 1rem; /* or use 'rounded-xl' if preferred */
+  padding: 0.5rem;
+  margin: 0;
+  /* wrap */
+  /* min-width: 9rem; */
+  text-wrap: nowrap;
+  transition: all 0.2s ease-in-out;
+}
+
+.textIconWrapper:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.48); /* Add the hover shadow effect */
+}

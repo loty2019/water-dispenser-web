@@ -22,6 +22,7 @@ html {
 .textIconWrapper {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   place-items: center;
   border-radius: 1rem; /* or use 'rounded-xl' if preferred */
   padding: 0.5rem;
