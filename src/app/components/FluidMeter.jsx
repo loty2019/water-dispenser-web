@@ -18,7 +18,7 @@ const FluidMeter = ({ percentage }) => {
 
     return (
         <div className="bottle-container mx-auto transition-all duration-200">
-            <div className="mask">
+            <div className="mask ">
                 <div className="fill" style={maskStyle}></div>
             </div>
 

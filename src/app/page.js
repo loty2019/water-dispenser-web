@@ -7,13 +7,6 @@ import Link from "next/link"; // Linking to other pages
 import Image from "next/image";
 // import of images
 import WaterHubLogo from "/public/img/WaterHub.png";
-import Coffee from "/public/img/espresso.png";
-import Soda from "/public/img/soda_can.png";
-import Latte from "/public/img/latte.png";
-import Beer from "/public/img/beer.png";
-import GlassOfWater from "/public/img/glassOfWater.png";
-import WaterBottle from "/public/img/waterBottle.png";
-import WineGlass from "/public/img/wine.png";
 import Settings from "/public/img/settingImg.png";
 import Reload from "/public/img/reload.png";
 import NewUser from "/public/img/newUser.png";
@@ -304,7 +297,7 @@ export default function Home() {
               <Link href={`./fillMenu?username=${user.name}`}>
                 <div className="flex items-baseline justify-center">
                   <button
-                    className="mt-4 z-10 text-lg border-2 border-black bg-[#55c0F3] hover:bg-[#4ba9d5] text-white dark:border-white text-center font-extrabold py-1 px-2 rounded-xl transition-all duration-200 "
+                    className="mt-4 z-10 text-lg border-2 border-black bg-[#55c0F3]  text-white dark:border-white text-center hover:scale-125 font-extrabold py-1 px-2 rounded-xl transition-all duration-200 "
                     //onFocus={() => setFocusStates({ ...focusStates, [user.name]: true })}
                     //onBlur={() => handleBlur(user.name)} // this is causing the button to disappear when clicked
                   >

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { database } from "../firebaseConfig";
 import { get, ref, push, set } from "firebase/database";
 import Link from "next/link"; // Linking to other pages
-import Confetti from './confetti';
+import Confetti from "./confetti";
 import Image from "next/image";
 import Reload from "/public/img/reload.png";
 import WaterHubLogo from "/public/img/WaterHub.png";
@@ -15,19 +15,20 @@ export default function Page() {
   const [weight, setWeight] = useState("");
   const [password, setPassword] = useState("");
   const [signupStatus, setSignupStatus] = useState(false);
-  const [isVisible, setIsVisible] = useState(false); // Confetti 
+  const [userExists, setUserExists] = useState(false);
+  const [isVisible, setIsVisible] = useState(false); // Confetti
+  const [showSignUp, setShowSignUp] = useState(true);
 
   const handleFluidSubmit = (name, value) => {
     // get formatted string for the date
-    const todayDate = new Date().toLocaleString("en-US", {
-      timeZone: "America/New_York",
-    });
+    const todayDate = new Date().toLocaleString("en-US", {});
     const options = {
       timeZone: "America/New_York",
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
     };
+
     const todayDateString = new Date(todayDate)
       .toLocaleString("en-US", options)
       .split(",")[0]
@@ -62,19 +63,34 @@ export default function Page() {
 
     const totalWaterIntake = Math.round(baseWaterIntake + additionalWater);
 
-    // set on firebase the new user under the path 'users/username'
-    const newUserRef = ref(database, `users/${username}`);
-    set(newUserRef, { objective: totalWaterIntake, password: password })
-      .then(() => {
-        console.log("New user added to the database");
+    // Check if the user already exists
+    const userRef = ref(database, `users/${username}`);
+    get(userRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log("User already exists");
+          setUserExists(true);
+          setShowSignUp(false);
+        } else {
+          // User does not exist, add the new user to the database
+          setSignupStatus(true);
+          const newUserRef = ref(database, `users/${username}`);
+          set(newUserRef, { objective: totalWaterIntake, password: password })
+            .then(() => {
+              console.log("New user added to the database");
+            })
+            .catch((error) => {
+              console.error("Error adding new user to the database:", error);
+            });
+
+          handleFluidSubmit(username, 0);
+          // redirect to the home page
+          //window.location.href = "/";
+        }
       })
       .catch((error) => {
-        console.error("Error adding new user to the database:", error);
+        console.error("Error checking if user exists:", error);
       });
-
-    handleFluidSubmit(username, 0);
-    // redirect to the home page
-    //window.location.href = "/";
   };
 
   return (
@@ -101,7 +117,7 @@ export default function Page() {
           }}
         />
       </div>
-      <div className="flex flex-col items-center mt-28 p-2 justify-center">
+      <div className="flex flex-col items-center mt-14 lg:mt-28 p-2 justify-center">
         <Image
           src={WaterHubLogo}
           alt="WaterHubLogo"
@@ -114,90 +130,107 @@ export default function Page() {
         </h1>
       </div>
       <div className="mb-4 p-5 text-center backdrop-blur-sm bg-white/10 lg:max-w-xl lg:w-full lg:mb-0 lg:text-left mx-auto rounded-3xl">
-        {!signupStatus && (
-        <div className="flex flex-col mt-4 mb-2 items-center p-2 justify-center">
-          <label htmlFor="username">
-            <label
-              htmlFor="first_name"
-              className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              First name
+        {!signupStatus && showSignUp && (
+          <div className="flex flex-col mt-4 mb-2 items-center p-2 justify-center">
+            <label htmlFor="username">
+              <label
+                htmlFor="first_name"
+                className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                First name
+              </label>
+              <input
+                type="text"
+                id="username"
+                className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="John"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.toLowerCase())}
+              />
             </label>
-            <input
-              type="text"
-              id="username"
-              className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="John"
-              value={username}
-              onChange={(e) => setUsername(e.target.value.toLowerCase())}
-            />
-          </label>
-          <label htmlFor="weight">
-            <label
-              htmlFor="first_name"
-              className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Weight (lb)
+            <label htmlFor="weight">
+              <label
+                htmlFor="first_name"
+                className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Weight (lb)
+              </label>
+              <input
+                type="number"
+                id="weight"
+                className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="165"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+              />
             </label>
-            <input
-              type="number"
-              id="weight"
-              className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="165"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-            />
-          </label>
-          <label htmlFor="exercise">
-            <label
-              htmlFor="first_name"
-              className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Daily Exercise (min)
+            <label htmlFor="exercise">
+              <label
+                htmlFor="first_name"
+                className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Daily Exercise (min)
+              </label>
+              <input
+                type="number"
+                id="exercise"
+                className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="60"
+                value={exercise}
+                onChange={(e) => setExercise(e.target.value)}
+              />
             </label>
-            <input
-              type="number"
-              id="exercise"
-              className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="60"
-              value={exercise}
-              onChange={(e) => setExercise(e.target.value)}
-            />
-          </label>
-          <label htmlFor="password">
-            <label
-              htmlFor="first_name"
-              className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Password
+            <label htmlFor="password">
+              <label
+                htmlFor="first_name"
+                className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="•••••••••"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </label>
-            <input
-              type="password"
-              id="password"
-              className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="•••••••••"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
-        <button
-            type="submit"
-            className="text-white font-extrabold mt-4 bg-[#426eff] hover:bg-[#479fc8] hover:scale-110 duration-200 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-fit sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            onClick={() => {
+            <button
+              type="submit"
+              className="text-white font-extrabold mt-4 bg-[#426eff] hover:bg-[#479fc8] hover:scale-110 duration-200 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-fit sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              onClick={() => {
                 newUserHandler();
-                setSignupStatus(true);
-                setIsVisible(true); // Confetti 
-            }}
-        >
-            Submit
-        </button>
-        {isVisible && <Confetti />}
-        </div>
+                setShowSignUp(false);
+                setIsVisible(true); // Confetti
+              }}
+            >
+              Submit
+            </button>
+            {isVisible && <Confetti />}
+          </div>
+        )}
+        {userExists && (
+          <div className="flex flex-col mt-4 mb-2 items-center p-2 justify-center">
+            <h1 className="text-2xl font-sans font-bold lg:mt-0 text-red-600">
+              Username already exists!
+            </h1>
+              <button
+                type="submit"
+                className="text-white font-extrabold mt-4 bg-[#426eff] hover:bg-[#479fc8] hover:scale-110 duration-200 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-fit sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                onClick={() => {
+                  setUserExists(false);
+                  setShowSignUp(true);
+                }}
+              >
+                Try Again
+              </button>
+          </div>
         )}
         {signupStatus && (
           <div className="flex flex-col mt-4 mb-2 items-center p-2 justify-center">
-            <h1 className="text-2xl font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">
+            <h1 className="text-2xl font-sans font-bold lg:mt-0 text-green-600">
               Account Created!
             </h1>
             <Link href="./">
@@ -211,7 +244,7 @@ export default function Page() {
           </div>
         )}
       </div>
-      
+
       <div className="flex justify-center mt-4">
         <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
           Daily water intake is calculated based on your weight and exercise.
