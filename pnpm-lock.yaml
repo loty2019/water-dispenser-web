@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  chart.js:
+    specifier: ^4.4.1
+    version: 4.4.1
   firebase:
     specifier: ^10.7.1
     version: 10.7.1
