@@ -142,7 +142,7 @@ export default function Page() {
         </div>
         <div className='flex justify-center items-center'>
             {chartData && chartData.labels ? (
-                <Line data={chartData} options={{ responsive: true }} className='bg-[#ffffff60] backdrop-blur-md rounded-2xl m-4 p-2 lg:m-10' />
+                <Line data={chartData} options={{ responsive: true }} className='bg-[#ffffff60] backdrop-blur-md rounded-2xl m-4 p-2 md:m-10 lg:ml-32 lg:mr-32' />
             ) : (
                 <p>No data to display</p>
             )}

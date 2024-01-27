@@ -441,6 +441,13 @@ export default function Page() {
           </div>
         </div>
       </div>
+      <div className="flex justify-center items-center mt-5">
+        <Link href="./">
+          <button className="bg-[#55C0F3] hover:bg-[#47a5d1] shadow-lg border-2 border-blue-950 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200">
+            Done
+          </button>
+        </Link>
+      </div>
     </main>
   );
 }
