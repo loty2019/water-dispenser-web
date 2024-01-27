@@ -312,7 +312,7 @@ export default function Home() {
                 percentage={(getSum(user) / (objectives[user.name] + 10)) * 100}
               />
 
-              <div className="flex items-center justify-center space-x-2 md:space-x-4 ">
+              <div className="flex flex-col items-center justify-center md:flex-row md:space-x-4 ">
                 <Link href={`./fillMenu?username=${user.name}`}>
                   <div className="flex items-baseline justify-center">
                     <button className="mt-4 z-10 text-lg border-2 border-[#000000b8] bg-[#55c0F3] text-white dark:border-white text-center hover:scale-125 font-extrabold py-1 px-2 rounded-xl transition-all duration-200">
