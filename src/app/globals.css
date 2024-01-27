@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 .body {
+  padding-right: env(safe-area-inset-right, 0);
+  padding-left: env(safe-area-inset-left, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-top: env(safe-area-inset-top, 0);
   overflow: hidden;
 }
 
@@ -10,10 +14,12 @@
   overflow-y: auto; /* Allow vertical scrolling */
   scrollbar-width: none; /* For Firefox */
   -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
 }
 
 .scroll-wrapper::-webkit-scrollbar {
-  display: none; /* For Chrome, Safari, and Opera */
+  display: none !important; /* For Chrome, Safari, and Opera */
 }
 
 body::-webkit-scrollbar, html::-webkit-scrollbar {

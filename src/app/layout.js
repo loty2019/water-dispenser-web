@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { ThemeSwitcher } from './components/ThemeSwitcher'
 import './globals.css'
 import { ThemeProvider } from './theme-provider'
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import Link from 'next/link'
 import Image from 'next/image';
 import Settings from '/public/img/settingImg.png';

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^1.0.8",
     "chart.js": "^4.4.1",
     "firebase": "^10.7.1",
     "next": "14.0.4",
