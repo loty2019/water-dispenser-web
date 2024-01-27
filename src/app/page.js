@@ -238,7 +238,7 @@ export default function Home() {
   }
 
   return (
-    <main className=" min-h-screen p-4 lg:p-14 flex-col">
+    <main className="scroll-wrapper min-h-screen p-4 lg:p-14 flex-col">
       <div className="absolute p-0 right-16 top-3 flex flex-row-reverse items-center justify-center">
         <div className="scale-125 hover:scale-150 duration-200">
           <Link href="./dashboard">
