@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <Head>
-        <meta name="viewport" content="initial-scale=1, viewport-fit=cover, width=device-width"></meta>
+        <meta name="viewport" content="initial-scale=1, viewport-fit=cover"></meta>
         <meta name="apple-mobile-web-app-capable" content="yes"></meta>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/logo/512.png"></link>
