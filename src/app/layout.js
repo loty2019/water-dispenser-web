@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
             data-transition-in
           />
           <ThemeSwitcher />
-          <main>{children} <SpeedInsights/></main>
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>
