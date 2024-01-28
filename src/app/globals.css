@@ -2,12 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-.body {
-  overflow: hidden;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
+
 @supports(padding:max(0px)) {
-	section {
+	body {
 		/* new syntax iOS 11.2+ */
 		padding-left:  max(1em, env(safe-area-inset-left));
 		padding-right: max(1em, env(safe-area-inset-right));
@@ -33,8 +36,8 @@ body::-webkit-scrollbar, html::-webkit-scrollbar {
 
 @layer components {
   #gradient-canvas {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     --gradient-color-1: #c3e4ff;
     --gradient-color-2: #6ec3f4;
     --gradient-color-3: #4857ff;
