@@ -27,12 +27,14 @@ import { get, ref } from 'firebase/database';
 import { database } from '../firebaseConfig';
 import WaterHubLogo from "/public/img/WaterHub.png";
 import Reload from "/public/img/reload.png";
-
+import {CircularProgress} from '@nextui-org/react';
 
 export default function Page() {
     const [chartData, setChartData] = useState({});
     const [loading, setLoading] = useState(true);
     const [name , setName] = useState("");
+    const [averageGrade, setAverageGrade] = useState(0);
+    const [gradeColor, setGradeColor] = useState('');
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -56,19 +58,49 @@ export default function Page() {
                     if (recordsSnapshot.exists()) {
                         const records = recordsSnapshot.val();
                         const userData = {};
-    
+                        const percentage = {};
+
                         // Loop through the records by date
                         Object.keys(records).forEach((date) => {
                             if (records[date][username]) {
                                 // Loop through the times for this user on this date
                                 Object.keys(records[date][username]).forEach((time) => {
+
                                     const quantity = records[date][username][time];
+                                    
                                     // Add the quantity to the existing total for this date
                                     userData[date] = (userData[date] || 0) + quantity;
+                                    
                                 });
+
+                                // calculate the percentage of the objective
+                                percentage[date] = Math.round((userData[date] / objective) * 100);
                             }
                         });
-    
+
+                        //console.log(percentage)
+                        // do an average of all the percentages 
+                        let sum = 0;
+                        for (let i in percentage) {
+                            if (percentage[i] == 0) {
+                                delete percentage[i];
+                                continue;
+                            } 
+                            sum += percentage[i];
+                        }
+                        let average = sum / Object.keys(percentage).length;
+                        setAverageGrade(average);  
+                        
+                        // set the color of the grade
+                        if (average >= 60) {
+                            setGradeColor('success');
+                        } else if (average < 60) {
+                            setGradeColor('warning');
+                        }
+                        else if (average < 40){
+                            setGradeColor('danger');
+                        }
+
                         // Convert userData to chartData
                         setChartData({
                             labels: Object.keys(userData).sort(),
@@ -78,7 +110,6 @@ export default function Page() {
                                 borderColor: 'rgb(75, 192, 192)',
                                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                                 pointRadius: 4, // Change the size of the points
-                                fill: true,
                                 tension: 0.4,
 
                             }, {
@@ -87,7 +118,6 @@ export default function Page() {
                                 borderColor: 'red',
                                 borderWidth: 3,
                                 borderDash: [10, 5], // line dashed
-                                fill: false,
                                 tension: 0,
                                 pointRadius: 0, // No points along this line
                             }]
@@ -140,9 +170,22 @@ export default function Page() {
             <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className="dark:bg-slate-300 rounded-xl" />
             <h1 className="text-4xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">{String(name).charAt(0).toUpperCase() + String(name).slice(1)}&apos;s History</h1>
         </div>
+        <div className="flex flex-row items-center mt-2 p-2 justify-center">
+            <h1 className="text-2xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">Your grade </h1>
+            <div className='ml-2 mb-2'>
+                <CircularProgress
+                    size="lg"
+                    value={averageGrade}
+                    showValueLabel={true}
+                    color= {gradeColor}
+                    aria-label="Average Grade"
+                    className='backdrop-blur-md rounded-2xl'
+                />
+            </div>
+        </div>
         <div className='flex justify-center items-center'>
             {chartData && chartData.labels ? (
-                <Line data={chartData} options={{ responsive: true }} className='bg-[#ffffff60] backdrop-blur-md rounded-2xl m-4 p-2 md:m-10 lg:ml-32 lg:mr-32' />
+                <Line data={chartData} options={{ responsive: true }} className='bg-[#ffffff60] mb-4 mt-2 backdrop-blur-md rounded-2xl ml-4 mr-4 p-2 md:mr-10 md:ml-10 lg:ml-32 lg:mr-32' />
             ) : (
                 <p>No data to display</p>
             )}

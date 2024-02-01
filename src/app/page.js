@@ -144,7 +144,7 @@ export default function Home() {
   // Fetch the data from the database when the component mounts
   useEffect(() => {
     const usersRef = ref(database, "records");
-    const ObjectiveRef = ref(database, "objective");
+    
     get(usersRef)
       .then((snapshot) => {
         if (snapshot.exists()) {

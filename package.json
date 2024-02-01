@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nextui-org/popover": "^2.1.14",
+    "@nextui-org/progress": "^2.0.24",
+    "@nextui-org/react": "^2.2.9",
     "@vercel/speed-insights": "^1.0.8",
     "chart.js": "^4.4.1",
     "firebase": "^10.7.1",

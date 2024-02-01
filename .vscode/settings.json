@@ -4,6 +4,7 @@
         "chartjs",
         "Hydroflask",
         "Laci",
+        "nextui",
         "Userhandler"
     ]
 }
