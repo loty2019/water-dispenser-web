@@ -7,7 +7,8 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler
   } from 'chart.js';
   
   ChartJS.register(
@@ -17,7 +18,8 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler
   );
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -27,8 +29,6 @@ import { get, ref } from 'firebase/database';
 import { database } from '../firebaseConfig';
 import WaterHubLogo from "/public/img/WaterHub.png";
 import Reload from "/public/img/reload.png";
-import {CircularProgress} from '@nextui-org/progress';
-
 
 export default function Page() {
     const [chartData, setChartData] = useState({});
@@ -112,6 +112,12 @@ export default function Page() {
                                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                                 pointRadius: 4, // Change the size of the points
                                 tension: 0.4,
+                                // add fade effect under the line
+                                fill: {
+                                    target: 'origin',
+                                    above: 'rgba(75, 192, 192, 0.5)',
+                                    above: 'rgba(75, 192, 192, 0.3)',
+                                }
 
                             }, {
                                 label: 'Ideal Consumption',
@@ -172,16 +178,9 @@ export default function Page() {
             <h1 className="text-4xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">{String(name).charAt(0).toUpperCase() + String(name).slice(1)}&apos;s History</h1>
         </div>
         <div className="flex flex-row items-center mt-2 p-2 justify-center">
-            <h1 className="text-2xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">Your grade </h1>
+            <h1 className="text-2xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white ">Your grade </h1>
             <div className='ml-2 mb-2'>
-                <CircularProgress
-                    size="lg"
-                    value={averageGrade}
-                    showValueLabel={true}
-                    color= {gradeColor}
-                    aria-label="Average Grade"
-                    className='backdrop-blur-md rounded-2xl'
-                />
+                <span className={`text-2xl font-bold text-${gradeColor}-600 dark:text-${gradeColor}-400 backdrop-blur-md bg-[#ffffff60] p-1 rounded-lg`}>{Math.round(averageGrade)}%</span>
             </div>
         </div>
         <div className='flex justify-center items-center'>

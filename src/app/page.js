@@ -52,6 +52,7 @@ function getSum(user) {
 export default function Home() {
   // Define the state variable 'users' and the function to update it 'setUsers'
   const [users, setUsers] = useState([]);
+  const [usersRecords, setUsersRecords] = useState([]);
   const [objectives, setObjectives] = useState({});
   const [accumulatedAmount, setAccumulatedAmount] = useState(0);
   const [desiredValue, setDesiredValue] = useState(0);
@@ -60,7 +61,7 @@ export default function Home() {
   const [inputValues, setInputValues] = useState({});
   const [submitDone, setSubmitDone] = useState({});
   const [loading, setLoading] = useState(true);
-  const [confirmationName, setConfirmationName] = useState({});
+  
 
 
   const handleFluidChange = (event, name) => {
@@ -164,7 +165,7 @@ export default function Home() {
 
           console.log(usersArray);
           // Update the 'users' state with the fetched data for today
-          setUsers(usersArray);
+          setUsersRecords(usersArray);
           setAccumulatedAmount(snapshot.val().forever_consumption);
           setDesiredValue(
             (snapshot.val().forever_consumption * 0.0078125).toFixed(1)
@@ -182,19 +183,10 @@ export default function Home() {
     get(usersRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
-          console.log(snapshot.val());
+          //console.log(snapshot.val());
           const users = snapshot.val();
           // Update the 'users' state with the fetched data for today
-          const updatedUsers = [...users];
-          const userIndex = updatedUsers.findIndex((user) => user.name === name);
-          if (userIndex !== -1) {
-            updatedUsers[userIndex].data.push({ time, value: parseInt(value) });
-            setUsers(updatedUsers);
-          } else {
-            updatedUsers.push({ name, data: [{ time, value: parseInt(value) }] });
-            setUsers(updatedUsers);
-          }
-          
+          setUsers(Object.keys(users).map((name) => ({ name })));
         }
       })
       .catch((error) => {
@@ -327,12 +319,12 @@ export default function Home() {
               </span>
               <p className="font-bold text-sm mb-2 text-blue-950 dark:text-white">
                 <span id={user.name} className="font-bold  text-xl">
-                  {getSum(user)}
+                  {getSum(usersRecords[index] || { data: [] })}
                 </span>
                 /{objectives[user.name] || "??"} oz
               </p>
               <FluidMeter
-                percentage={(getSum(user) / (objectives[user.name] + 10)) * 100}
+                percentage={(getSum(usersRecords[index] || { data: [] }) / (objectives[user.name] + 10)) * 100}
               />
 
               <div className="flex flex-col items-center justify-center md:flex-row md:space-x-4 ">
