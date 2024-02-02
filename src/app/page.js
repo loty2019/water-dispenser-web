@@ -143,12 +143,13 @@ export default function Home() {
 
   // Fetch the data from the database when the component mounts
   useEffect(() => {
-    const usersRef = ref(database, "records");
+    const recordsRef = ref(database, "records");
+    const usersRef = ref(database, "users");
     
-    get(usersRef)
+    get(recordsRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
-          console.log(snapshot.val());
+          //console.log(snapshot.val());
           // Extract users for today
           const todayUsers = extractUsersForToday(snapshot.val());
 
@@ -176,6 +177,28 @@ export default function Home() {
       .catch((error) => {
         console.error(error);
         setLoading(false);
+      });
+
+    get(usersRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+          const users = snapshot.val();
+          // Update the 'users' state with the fetched data for today
+          const updatedUsers = [...users];
+          const userIndex = updatedUsers.findIndex((user) => user.name === name);
+          if (userIndex !== -1) {
+            updatedUsers[userIndex].data.push({ time, value: parseInt(value) });
+            setUsers(updatedUsers);
+          } else {
+            updatedUsers.push({ name, data: [{ time, value: parseInt(value) }] });
+            setUsers(updatedUsers);
+          }
+          
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
       });
   }, []);
 

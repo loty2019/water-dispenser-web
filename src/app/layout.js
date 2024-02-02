@@ -1,12 +1,10 @@
-import { Inter } from 'next/font/google'
-import Head from 'next/head'
-import { ThemeSwitcher } from './components/ThemeSwitcher'
-import './globals.css'
-import { ThemeProvider } from './theme-provider'
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import Link from 'next/link'
-import Image from 'next/image';
-import Settings from '/public/img/settingImg.png';
+import { Inter } from 'next/font/google';
+import Head from 'next/head';
+import * as React from "react";
+import { ThemeSwitcher } from './components/ThemeSwitcher';
+import './globals.css';
+import { ThemeProvider } from './theme-provider';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,6 +24,7 @@ export default function RootLayout({ children }) {
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/logo/512.png"></link>
       </Head>
+      
       <body className={`${inter.className}`} >
         <SpeedInsights/>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
@@ -38,6 +37,8 @@ export default function RootLayout({ children }) {
           <main>{children}</main>
         </ThemeProvider>
       </body>
+     
     </html>
+    
   )
 }
