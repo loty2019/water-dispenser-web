@@ -27,8 +27,7 @@ import { get, ref } from 'firebase/database';
 import { database } from '../firebaseConfig';
 import WaterHubLogo from "/public/img/WaterHub.png";
 import Reload from "/public/img/reload.png";
-import {CircularProgress} from '@nextui-org/react';
-import {NextUIProvider} from "@nextui-org/react";
+import {CircularProgress} from '@nextui-org/progress';
 
 
 export default function Page() {
@@ -154,7 +153,6 @@ export default function Page() {
 
     return (
       <main>
-        <NextUIProvider>
         <div className="absolute p-0 left-4  top-4 flex flex-row-reverse items-center justify-center">
             <Link href="./">
               <button className="bg-slate-600 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200">← Go Back</button>
@@ -193,7 +191,6 @@ export default function Page() {
                 <p>No data to display</p>
             )}
         </div>
-        </NextUIProvider>
       </main>
     );
 }

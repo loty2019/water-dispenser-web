@@ -5,6 +5,7 @@ import { ThemeSwitcher } from './components/ThemeSwitcher';
 import './globals.css';
 import { ThemeProvider } from './theme-provider';
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import {Providers} from "./providers";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
       
       <body className={`${inter.className}`} >
         <SpeedInsights/>
+        <Providers>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <canvas
             id="gradient-canvas"
@@ -36,6 +38,7 @@ export default function RootLayout({ children }) {
           <ThemeSwitcher />
           <main>{children}</main>
         </ThemeProvider>
+        </Providers>
       </body>
      
     </html>
