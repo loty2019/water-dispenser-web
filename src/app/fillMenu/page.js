@@ -17,6 +17,7 @@ import WineGlass from "/public/img/wine.png";
 import BeerBottle from "/public/img/beerbottle.png";
 import WhiteHydro from "/public/img/WhiteHydro.png";
 import PurpleHydro from "/public/img/PurpleHydro.png";
+import Confetti from 'react-confetti';
 
 import "./style.css"; // Importing css file
 
@@ -31,6 +32,7 @@ export default function Page() {
   const [confirmationName, setConfirmationName] = useState({});
   const [addedItems, setAddedItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const imgIconSize = 70;
 
@@ -58,6 +60,8 @@ export default function Page() {
       { name: itemName, src: imgSrc, amount: value },
     ]);
 
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 3000);
 
     // get formatted string for the date
     const todayDate = new Date().toLocaleString("en-US", {
@@ -147,7 +151,7 @@ export default function Page() {
           }}
         />
       </div>
-
+      {showConfetti && <Confetti />}
       <div className="flex flex-col items-center mt-6 p-2 justify-center">
         <Image
           src={WaterHubLogo}

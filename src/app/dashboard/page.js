@@ -49,7 +49,7 @@ export default function Page() {
         <div className="flex flex-col items-center mt-4">
           <input type="text" value={username} onChange={handleUsernameChange} placeholder={"Enter your username"} className="p-2 border border-gray-300 rounded-lg" />
           <button onClick={handleSaveUsername} className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Save Username</button>
-          {isSaved && <p className="text-green-500 mt-2">Username saved!</p>} {/* Display success message when saved */}
+          {isSaved && <p className="text-green-500 mt-2">Username saved!</p>}
         </div>
       </main>
     );

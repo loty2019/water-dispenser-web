@@ -42,6 +42,9 @@ const extractUsersForToday = (records) => {
 };
 
 function getSum(user) {
+  if (!user) {
+    return 0;
+  }
   return user.data.reduce((sum, entry) => sum + entry.value, 0);
 }
 
@@ -57,7 +60,6 @@ export default function Home() {
   const [accumulatedAmount, setAccumulatedAmount] = useState(0);
   const [desiredValue, setDesiredValue] = useState(0);
   const [focusStates, setFocusStates] = useState({});
-  const [expanded, setExpanded] = useState(false);
   const [inputValues, setInputValues] = useState({});
   const [submitDone, setSubmitDone] = useState({});
   const [loading, setLoading] = useState(true);
@@ -346,7 +348,7 @@ export default function Home() {
                       alt="history"
                       width={33}
                       height={30}
-                      className="bg-[#55c0F3] border-[#000000b8] border-2 p-1 rounded-lg mt-4"
+                      className="bg-[#55c0F3] border-[#000000b8] dark:border-white border-2 p-1 rounded-lg mt-4"
                     />
                   </Link>
                 </div>
