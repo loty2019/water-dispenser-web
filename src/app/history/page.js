@@ -176,7 +176,7 @@ export default function Page() {
         </div>    
         <div className="flex flex-col items-center mt-10 p-2 justify-center">
             <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className="dark:bg-slate-300 rounded-xl" />
-            <h1 className="text-4xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">{String(name).charAt(0).toUpperCase() + String(name).slice(1)}&apos;s History</h1>
+            <h1 className="text-center text-4xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">{String(name).charAt(0).toUpperCase() + String(name).slice(1)}&apos;s History</h1>
         </div>
         <div className="flex flex-row items-center mt-2 p-2 justify-center">
             <h1 className="text-2xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white ">Your grade </h1>

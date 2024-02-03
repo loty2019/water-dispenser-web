@@ -61,6 +61,7 @@ export default function Home() {
   const [inputValues, setInputValues] = useState({});
   const [submitDone, setSubmitDone] = useState({});
   const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState("");
   
 
 
@@ -146,6 +147,8 @@ export default function Home() {
   useEffect(() => {
     const recordsRef = ref(database, "records");
     const usersRef = ref(database, "users");
+
+    setUsername(localStorage.getItem("username")); // Get the username from localStorage
     
     get(recordsRef)
       .then((snapshot) => {
@@ -253,7 +256,7 @@ export default function Home() {
   }
 
   return (
-    <main className="scroll-wrapper min-h-screen p-4 lg:p-14 flex-col">
+    <main className="scroll-wrapper min-h-screen lg:p-14 flex-col">
       <div className="absolute p-0 right-16 top-3 flex flex-row-reverse items-center justify-center">
         <div className="scale-125 hover:scale-150 duration-200">
           <Link href="./dashboard">
@@ -279,7 +282,7 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row mt-8 sm:mt-4 items-center p-2 justify-center">
+      <div className="flex flex-col mt-8 sm:mt-4 items-center p-2 justify-center">
         <Image
           src={WaterHubLogo}
           alt="WaterHubLogo"
@@ -288,24 +291,24 @@ export default function Home() {
           className=" mt-6 dark:bg-slate-300 rounded-xl"
         />
         <h1 className="text-4xl font-sans text-center font-bold lg:mt-0 text-blue-950 dark:text-white">
-          How much water did you drink today?
+          Hello {username}!
         </h1>
       </div>
       <div className="flex mb-6 items-center p-2 justify-center">
-        <div className="scale-110 hover:scale-125 duration-200 cursor-pointer">
-          <Link href="./signup">
-            <Image
-              src={NewUser}
-              alt="new user"
-              width={30}
-              height={30}
-              className="bg-slate-600 mr-2 p-1 rounded-md"
-            />
-          </Link>
-        </div>
+        <Link href="./signup">
+          <Image
+            src={NewUser}
+            alt="new user"
+            width={30}
+            height={30}
+            className="bg-slate-600 mr-2 p-1 rounded-md scale-110 hover:scale-125 duration-200 cursor-pointer"
+          />
+        </Link>
+        <Link href="./signup">
         <h1 className="text-lg font-sans font-bold text-blue-950 dark:text-white">
           Register!
         </h1>
+        </Link>
       </div>
       <div className="mb-4 p-5 text-center backdrop-blur-sm bg-white/10 lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto rounded-3xl">
         <section className={`grid grid-cols-2 md:grid-cols-3 justify-evenly`}>
