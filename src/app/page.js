@@ -166,6 +166,12 @@ export default function Home() {
       .then((snapshot) => {
         if (snapshot.exists()) {
           const records = snapshot.val();
+
+          // Update the 'accumulatedAmount' state with the fetched data
+          setAccumulatedAmount(records.forever_consumption);
+          setDesiredValue((records.forever_consumption * 0.0078125).toFixed(1));
+
+          // Update the 'users' state with the fetched data for today
           const todayUsers = extractUsersForToday(records);
 
           get(usersRef).then((userSnapshot) => {
@@ -188,8 +194,6 @@ export default function Home() {
         console.error(error);
         setLoading(false);
       });
-
-    // No dependency on users state, so remove it from dependency array
   }, []);
 
   useEffect(() => {

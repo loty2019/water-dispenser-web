@@ -18,7 +18,7 @@ import BeerBottle from "/public/img/beerbottle.png";
 import WhiteHydro from "/public/img/WhiteHydro.png";
 import PurpleHydro from "/public/img/PurpleHydro.png";
 import HelloKittyBottle from "/public/img/helloKitty.png";
-import IceTeaArnold from "/public/img/IceTeaArnold.png";
+import IceTeaArnold from "/public/img/iceTeaArnold.png";
 import Confetti from "react-confetti";
 
 import "./style.css"; // Importing css file
