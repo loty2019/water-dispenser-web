@@ -94,12 +94,13 @@ export default function Page() {
                         
                         // set the color of the grade
                         if (average >= 60) {
-                            setGradeColor('success');
-                        } else if (average < 60) {
-                            setGradeColor('warning');
+                            setGradeColor('green');
                         }
-                        else if (average < 40){
-                            setGradeColor('danger');
+                        if (average < 60) {
+                            setGradeColor('yellow');
+                        }
+                        if (average < 40){
+                            setGradeColor('red');
                         }
 
                         // Convert userData to chartData

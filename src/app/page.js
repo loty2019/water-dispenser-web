@@ -319,12 +319,12 @@ export default function Home() {
               </span>
               <p className="font-bold text-sm mb-2 text-blue-950 dark:text-white">
                 <span id={user.name} className="font-bold  text-xl">
-                  {getSum(usersRecords[index] || { data: [] })}
+                  {getSum(usersRecords[index])}
                 </span>
                 /{objectives[user.name] || "??"} oz
               </p>
               <FluidMeter
-                percentage={(getSum(usersRecords[index] || { data: [] }) / (objectives[user.name] + 10)) * 100}
+                percentage={(getSum(usersRecords[index]) / (objectives[user.name] + 10)) * 100}
               />
 
               <div className="flex flex-col items-center justify-center md:flex-row md:space-x-4 ">
