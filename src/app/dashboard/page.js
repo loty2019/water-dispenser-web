@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link'; // Linking to other pages
 import Image from 'next/image';
 import Reload from '/public/img/reload.png';
@@ -8,6 +8,14 @@ import WaterHubLogo from '/public/img/WaterHub.png';
 
 export default function Page() {
     const [username, setUsername] = useState('');
+    const [isSaved, setIsSaved] = useState(false); // New state for saving status
+
+    useEffect(() => {
+        const savedUsername = localStorage.getItem('username');
+        if (savedUsername) {
+            setUsername(savedUsername);
+        }
+    }, []);
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -15,6 +23,7 @@ export default function Page() {
 
     const handleSaveUsername = () => {
         localStorage.setItem('username', username);
+        setIsSaved(true); // Set the saving status to true
     };
 
     return (
@@ -38,8 +47,9 @@ export default function Page() {
           <h1 className="text-4xl font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">Settings</h1>
         </div>
         <div className="flex flex-col items-center mt-4">
-          <input type="text" value={username} onChange={handleUsernameChange} placeholder="Enter your username" className="p-2 border border-gray-300 rounded-lg" />
+          <input type="text" value={username} onChange={handleUsernameChange} placeholder={"Enter your username"} className="p-2 border border-gray-300 rounded-lg" />
           <button onClick={handleSaveUsername} className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Save Username</button>
+          {isSaved && <p className="text-green-500 mt-2">Username saved!</p>} {/* Display success message when saved */}
         </div>
       </main>
     );
