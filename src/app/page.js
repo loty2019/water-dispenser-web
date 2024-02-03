@@ -38,7 +38,15 @@ const extractUsersForToday = (records) => {
   const time = hours + ":" + minutes + ":" + seconds;
   console.log(time);
 
-  return records[formattedDateString] || [];
+  let usersToday = {};
+  if(records[formattedDateString]) {
+    Object.keys(records[formattedDateString]).forEach((userName) => {
+      const userRecords = Object.entries(records[formattedDateString][userName]).map(([time, value]) => ({ time, value }));
+      usersToday[userName] = userRecords;
+    });
+  }
+
+  return usersToday;
 };
 
 function getSum(user) {
@@ -64,119 +72,115 @@ export default function Home() {
   const [submitDone, setSubmitDone] = useState({});
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
-  
+  const [userDetails, setUserDetails] = useState([]);
 
+  // Fetch the username from local storage
+  useEffect(() => {
+    const savedUsername = localStorage.getItem("username");
+    if (savedUsername) {
+      setUsername(savedUsername);
+    }
+  }, []);
 
-  const handleFluidChange = (event, name) => {
-    setInputValues({ ...inputValues, [name]: event.target.value });
-    //setFluidValue(event.target.value);
-    //setFocusStates({ ...focusStates, [name]: true });
-  };
+  // const handleFluidChange = (event, name) => {
+  //   setInputValues({ ...inputValues, [name]: event.target.value });
+  //   //setFluidValue(event.target.value);
+  //   //setFocusStates({ ...focusStates, [name]: true });
+  // };
+  // const handleBlur = (name) => {
+  //   // Set a timeout to allow click event to fire before hiding the button
+  //   setTimeout(() => {
+  //     setFocusStates({ ...focusStates, [name]: false });
+  //   }, 100);
+  // };
+  // const handleSubmitDone = (userName) => {
+  //   setTimeout(() => {
+  //     setSubmitDone({ ...submitDone, [userName]: true }); // Set it back to true after 2 seconds
+  //   }, 500);
+  //   setTimeout(() => {
+  //     setSubmitDone({ ...submitDone, [userName]: false }); // Set it back to true after 2 seconds
+  //   }, 4000);
+  // };
+  // const handleFluidSubmit = (name, value) => {
+  //   // get formatted string for the date
+  //   const todayDate = new Date().toLocaleString("en-US", {
+  //     timeZone: "America/New_York",
+  //   });
+  //   const options = {
+  //     timeZone: "America/New_York",
+  //     year: "numeric",
+  //     month: "2-digit",
+  //     day: "2-digit",
+  //   };
+  //   const todayDateString = new Date(todayDate)
+  //     .toLocaleString("en-US", options)
+  //     .split(",")[0]
+  //     .replace(/\//g, "-");
+  //   const [month, day, year] = todayDateString.split("-");
+  //   const formattedDateString = `${year}-${month}-${day}`;
 
-  const handleBlur = (name) => {
-    // Set a timeout to allow click event to fire before hiding the button
-    setTimeout(() => {
-      setFocusStates({ ...focusStates, [name]: false });
-    }, 100);
-  };
+  //   // get formatted time hh:mm:ss in the US east coast
+  //   const now = new Date();
+  //   const hours = now.getHours().toString().padStart(2, "0");
+  //   const minutes = now.getMinutes().toString().padStart(2, "0");
+  //   const seconds = now.getSeconds().toString().padStart(2, "0");
+  //   const time = hours + ":" + minutes + ":" + seconds;
+  //   console.log(time);
 
-  const handleSubmitDone = (userName) => {
-    setTimeout(() => {
-      setSubmitDone({ ...submitDone, [userName]: true }); // Set it back to true after 2 seconds
-    }, 500);
-    setTimeout(() => {
-      setSubmitDone({ ...submitDone, [userName]: false }); // Set it back to true after 2 seconds
-    }, 4000);
-  };
+  //   // create path to store the new values
+  //   let path = `records/${formattedDateString}/${name}/${time}`;
+  //   const fluidRef = ref(database, path);
 
-  const handleFluidSubmit = (name, value) => {
-    // get formatted string for the date
-    const todayDate = new Date().toLocaleString("en-US", {
-      timeZone: "America/New_York",
-    });
-    const options = {
-      timeZone: "America/New_York",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    };
-    const todayDateString = new Date(todayDate)
-      .toLocaleString("en-US", options)
-      .split(",")[0]
-      .replace(/\//g, "-");
-    const [month, day, year] = todayDateString.split("-");
-    const formattedDateString = `${year}-${month}-${day}`;
+  //   // set values in the database
+  //   set(fluidRef, parseInt(value)) &&
+  //     set(
+  //       ref(database, "records/forever_consumption"),
+  //       accumulatedAmount + parseInt(value)
+  //     )
+  //       .then(() => {
+  //         console.log("Fluid value added to the database");
 
-    // get formatted time hh:mm:ss in the US east coast
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    const seconds = now.getSeconds().toString().padStart(2, "0");
-    const time = hours + ":" + minutes + ":" + seconds;
-    console.log(time);
-
-    // create path to store the new values
-    let path = `records/${formattedDateString}/${name}/${time}`;
-    const fluidRef = ref(database, path);
-
-    // set values in the database
-    set(fluidRef, parseInt(value)) &&
-      set(
-        ref(database, "records/forever_consumption"),
-        accumulatedAmount + parseInt(value)
-      )
-        .then(() => {
-          console.log("Fluid value added to the database");
-
-          // Update the 'users' state with the fetched data for today
-          const updatedUsers = [...users];
-          const userIndex = updatedUsers.findIndex(
-            (user) => user.name === name
-          );
-          if (userIndex !== -1) {
-            updatedUsers[userIndex].data.push({ time, value: parseInt(value) });
-            setUsers(updatedUsers);
-          }
-        })
-        .catch((error) => {
-          console.error("Error adding fluid value to the database:", error);
-        });
-    setInputValues({ ...inputValues, [name]: "" });
-    handleSubmitDone(name);
-  };
+  //         // Update the 'users' state with the fetched data for today
+  //         const updatedUsers = [...users];
+  //         const userIndex = updatedUsers.findIndex(
+  //           (user) => user.name === name
+  //         );
+  //         if (userIndex !== -1) {
+  //           updatedUsers[userIndex].data.push({ time, value: parseInt(value) });
+  //           setUsers(updatedUsers);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error adding fluid value to the database:", error);
+  //       });
+  //   setInputValues({ ...inputValues, [name]: "" });
+  //   handleSubmitDone(name);
+  // };
 
   // Fetch the data from the database when the component mounts
   useEffect(() => {
     const recordsRef = ref(database, "records");
     const usersRef = ref(database, "users");
 
-    setUsername(localStorage.getItem("username")); // Get the username from localStorage
-    
     get(recordsRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
-          //console.log(snapshot.val());
-          // Extract users for today
-          const todayUsers = extractUsersForToday(snapshot.val());
+          const records = snapshot.val();
+          const todayUsers = extractUsersForToday(records);
 
-          // Convert the todayUsers data into an array of users
-          const usersArray = Object.entries(todayUsers).map(([name, data]) => ({
-            name,
-            data: Object.entries(data).map(([time, value]) => ({
-              time,
-              value,
-            })),
-          }));
-
-          console.log(usersArray);
-          // Update the 'users' state with the fetched data for today
-          setUsersRecords(usersArray);
-          setAccumulatedAmount(snapshot.val().forever_consumption);
-          setDesiredValue(
-            (snapshot.val().forever_consumption * 0.0078125).toFixed(1)
-          );
-        } else {
-          console.error("No data available from firebase");
+          get(usersRef).then((userSnapshot) => {
+            if (userSnapshot.exists()) {
+              const usersData = userSnapshot.val();
+              const userDetailsArray = Object.keys(usersData).map(
+                (userName) => ({
+                  name: userName,
+                  data: todayUsers[userName] || [],
+                })
+              );
+              console.log("User Details Array: ", userDetailsArray);
+              setUserDetails(userDetailsArray);
+            }
+          });
         }
         setLoading(false);
       })
@@ -185,18 +189,7 @@ export default function Home() {
         setLoading(false);
       });
 
-    get(usersRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          //console.log(snapshot.val());
-          const users = snapshot.val();
-          // Update the 'users' state with the fetched data for today
-          setUsers(Object.keys(users).map((name) => ({ name })));
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-      });
+    // No dependency on users state, so remove it from dependency array
   }, []);
 
   useEffect(() => {
@@ -307,14 +300,14 @@ export default function Home() {
           />
         </Link>
         <Link href="./signup">
-        <h1 className="text-lg font-sans font-bold text-blue-950 dark:text-white">
-          Register!
-        </h1>
+          <h1 className="text-lg font-sans font-bold text-blue-950 dark:text-white">
+            Register!
+          </h1>
         </Link>
       </div>
       <div className="mb-4 p-5 text-center backdrop-blur-sm bg-white/10 lg:max-w-5xl lg:w-full lg:mb-0 lg:text-left mx-auto rounded-3xl">
         <section className={`grid grid-cols-2 md:grid-cols-3 justify-evenly`}>
-          {users.map((user, index) => (
+          {userDetails.map((user, index) => (
             <div className="entry flex-row text-center mb-16" key={index}>
               <h1 className="text-2xl font-bold md:text-4xl capitalize">
                 {user.name}
@@ -324,12 +317,12 @@ export default function Home() {
               </span>
               <p className="font-bold text-sm mb-2 text-blue-950 dark:text-white">
                 <span id={user.name} className="font-bold  text-xl">
-                  {getSum(usersRecords[index])}
+                  {getSum(user)}
                 </span>
                 /{objectives[user.name] || "??"} oz
               </p>
               <FluidMeter
-                percentage={(getSum(usersRecords[index]) / (objectives[user.name] + 10)) * 100}
+                percentage={(getSum(user) / (objectives[user.name] + 10)) * 100}
               />
 
               <div className="flex flex-col items-center justify-center md:flex-row md:space-x-4 ">

@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { database } from "../firebaseConfig";
 import { get, ref, push, set } from "firebase/database";
 import Link from "next/link"; // Linking to other pages
-import Confetti from "./confetti";
 import Image from "next/image";
 import Reload from "/public/img/reload.png";
 import WaterHubLogo from "/public/img/WaterHub.png";
+import Confetti from 'react-confetti';
 
 export default function Page() {
   const [username, setUsername] = useState("");
@@ -18,43 +18,7 @@ export default function Page() {
   const [userExists, setUserExists] = useState(false);
   const [isVisible, setIsVisible] = useState(false); // Confetti
   const [showSignUp, setShowSignUp] = useState(true);
-
-  const handleFluidSubmit = (name, value) => {
-    // get formatted string for the date
-    const todayDate = new Date().toLocaleString("en-US", {});
-    const options = {
-      timeZone: "America/New_York",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    };
-
-    const todayDateString = new Date(todayDate)
-      .toLocaleString("en-US", options)
-      .split(",")[0]
-      .replace(/\//g, "-");
-    const [month, day, year] = todayDateString.split("-");
-    const formattedDateString = `${year}-${month}-${day}`;
-
-    // get formatted time hh:mm:ss in the US east coast
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    const seconds = now.getSeconds().toString().padStart(2, "0");
-    const time = hours + ":" + minutes + ":" + seconds;
-    console.log(time);
-
-    // create path to store the new values
-    let path = `records/${formattedDateString}/${name}/${time}`;
-    const fluidRef = ref(database, path);
-    set(fluidRef, parseInt(value))
-      .then(() => {
-        console.log("New fluid record added to the database");
-      })
-      .catch((error) => {
-        console.error("Error adding new fluid record to the database:", error);
-      });
-  };
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const newUserHandler = (e) => {
     // Calculate daily water intake
@@ -74,6 +38,11 @@ export default function Page() {
         } else {
           // User does not exist, add the new user to the database
           setSignupStatus(true);
+
+          // Show confetti
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 13000);
+
           const newUserRef = ref(database, `users/${username}`);
           set(newUserRef, { objective: totalWaterIntake, password: password })
             .then(() => {
@@ -83,12 +52,14 @@ export default function Page() {
               console.error("Error adding new user to the database:", error);
             });
 
-          handleFluidSubmit(username, 0);
+          // Save the username to local storage
+          localStorage.setItem("username", username);
           // redirect to the home page
           //window.location.href = "/";
         }
       })
       .catch((error) => {
+
         console.error("Error checking if user exists:", error);
       });
   };
@@ -117,6 +88,7 @@ export default function Page() {
           }}
         />
       </div>
+      {showConfetti && <Confetti />}
       <div className="flex flex-col items-center mt-14 lg:mt-28 p-2 justify-center">
         <Image
           src={WaterHubLogo}
@@ -144,6 +116,7 @@ export default function Page() {
                 id="username"
                 className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="John"
+                required
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toLowerCase())}
               />
@@ -160,6 +133,7 @@ export default function Page() {
                 id="weight"
                 className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="165"
+                required
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
               />
@@ -176,6 +150,7 @@ export default function Page() {
                 id="exercise"
                 className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="60"
+                required
                 value={exercise}
                 onChange={(e) => setExercise(e.target.value)}
               />
@@ -208,7 +183,7 @@ export default function Page() {
             >
               Submit
             </button>
-            {isVisible && <Confetti />}
+            
           </div>
         )}
         {userExists && (
@@ -228,6 +203,7 @@ export default function Page() {
               </button>
           </div>
         )}
+        
         {signupStatus && (
           <div className="flex flex-col mt-4 mb-2 items-center p-2 justify-center">
             <h1 className="text-2xl font-sans font-bold lg:mt-0 text-green-600">
