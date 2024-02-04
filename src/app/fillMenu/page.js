@@ -160,12 +160,13 @@ export default function Page() {
 
   return (
     <main className="pt-8">
-      <div className="absolute p-0 left-4  top-4 flex flex-row-reverse items-center justify-center">
-        <Link href="./">
-          <button className="bg-slate-600 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200">
-            ← Go Back
-          </button>
-        </Link>
+      <div className="absolute p-0 left-4  top-2 flex flex-row-reverse items-center justify-center">
+        <button
+          className="bg-slate-600 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200"
+          onClick={() => window.history.back()}
+        >
+          ← Go Back
+        </button>
       </div>
       <div className="absolute p-0 right-16 top-3 flex flex-row-reverse items-center justify-center scale-125 hover:scale-150 duration-200">
         <Image
@@ -278,7 +279,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="flex justify-center items-center mt-5">
+      <div className="flex justify-center items-center mt-5 mb-4">
         <Link href="./">
           <button className="bg-[#55C0F3] hover:bg-[#47a5d1] shadow-lg border-2 border-blue-950 p-2 font-sans font-bold text-slate-200 mb-4 rounded-lg hover:scale-110 active:scale-100 duration-200">
             Done

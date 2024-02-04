@@ -35,7 +35,6 @@ export default function Page() {
     const [loading, setLoading] = useState(true);
     const [name , setName] = useState("");
     const [averageGrade, setAverageGrade] = useState(0);
-    const [gradeColor, setGradeColor] = useState('');
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -90,18 +89,7 @@ export default function Page() {
                             sum += percentage[i];
                         }
                         let average = sum / Object.keys(percentage).length;
-                        setAverageGrade(average);  
-                        
-                        // set the color of the grade
-                        if (average >= 60) {
-                            setGradeColor('green');
-                        }
-                        if (average < 60) {
-                            setGradeColor('yellow');
-                        }
-                        if (average < 40){
-                            setGradeColor('red');
-                        }
+                        setAverageGrade(average);  // set the average grade
 
                         // Convert userData to chartData
                         setChartData({
@@ -160,36 +148,67 @@ export default function Page() {
 
     return (
       <main>
-        <div className="absolute p-0 left-4  top-4 flex flex-row-reverse items-center justify-center">
-            <Link href="./">
-              <button className="bg-slate-600 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200">← Go Back</button>
-            </Link>
+        <div className="absolute p-0 left-4  top-2 flex flex-row-reverse items-center justify-center">
+          <button
+            className="bg-slate-600 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200"
+            onClick={() => window.history.back()}
+          >
+            ← Go Back
+          </button>
         </div>
         <div className="absolute p-0 right-16 top-3 flex flex-row-reverse items-center justify-center scale-125 hover:scale-150 duration-200">
-          <Image 
-            src={Reload} 
-            alt="settings" 
-            width={32} height={32} 
+          <Image
+            src={Reload}
+            alt="settings"
+            width={32}
+            height={32}
             className="bg-slate-600 mr- p-1.5 rounded-md hover:ease-in-out duration-300"
-            onClick={() => {window.location.reload(true)}}
+            onClick={() => {
+              window.location.reload(true);
+            }}
           />
-        </div>    
+        </div>
         <div className="flex flex-col items-center mt-10 p-2 justify-center">
-            <Image src={WaterHubLogo} alt="WaterHubLogo" width={100} height={100} className="dark:bg-slate-300 rounded-xl" />
-            <h1 className="text-center text-4xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">{String(name).charAt(0).toUpperCase() + String(name).slice(1)}&apos;s History</h1>
+          <Image
+            src={WaterHubLogo}
+            alt="WaterHubLogo"
+            width={100}
+            height={100}
+            className="dark:bg-slate-300 rounded-xl"
+          />
+          <h1 className="text-center text-4xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white">
+            {String(name).charAt(0).toUpperCase() + String(name).slice(1)}
+            &apos;s History
+          </h1>
         </div>
         <div className="flex flex-row items-center mt-2 p-2 justify-center">
-            <h1 className="text-2xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white ">Your grade </h1>
-            <div className='ml-2 mb-2'>
-                <span className={`text-2xl font-bold text-${gradeColor}-600 dark:text-${gradeColor}-400 backdrop-blur-md bg-[#ffffff60] p-1 rounded-lg`}>{Math.round(averageGrade)}%</span>
-            </div>
+          <h1 className="text-2xl mb-4 font-sans font-bold lg:mt-0 text-blue-950 dark:text-white ">
+            Your grade{" "}
+          </h1>
+          <div className="ml-2 mb-2">
+            <span
+              className={`text-2xl font-bold backdrop-blur-md bg-[#ffffff60] p-1 rounded-lg ${
+                averageGrade >= 60
+                  ? "text-green-600 dark:text-green-400"
+                  : averageGrade < 40
+                  ? "text-red-600 dark:text-red-400"
+                  : "text-yellow-600 dark:text-yellow-400"
+              }`}
+            >
+              {Math.round(averageGrade)}%
+            </span>
+          </div>
         </div>
-        <div className='flex justify-center items-center'>
-            {chartData && chartData.labels ? (
-                <Line data={chartData} options={{ responsive: true }} className='bg-[#ffffff60] mb-4 mt-2 backdrop-blur-md rounded-2xl ml-4 mr-4 p-2 md:mr-10 md:ml-10 lg:ml-32 lg:mr-32' />
-            ) : (
-                <p>No data to display</p>
-            )}
+        <div className="flex justify-center items-center">
+          {chartData && chartData.labels ? (
+            <Line
+              data={chartData}
+              options={{ responsive: true }}
+              className="bg-[#ffffff60] mb-4 mt-2 backdrop-blur-md rounded-2xl ml-4 mr-4 p-2 md:mr-10 md:ml-10 lg:ml-32 lg:mr-32"
+            />
+          ) : (
+            <p>No data to display</p>
+          )}
         </div>
       </main>
     );

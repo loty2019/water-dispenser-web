@@ -56,6 +56,8 @@ export default function Page() {
           localStorage.setItem("username", username);
           // redirect to the home page
           //window.location.href = "/";
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 13000);
         }
       })
       .catch((error) => {
@@ -66,12 +68,13 @@ export default function Page() {
 
   return (
     <main className="p-8">
-      <div className="absolute p-0 left-4  top-4 flex flex-row-reverse items-center justify-center">
-        <Link href="./">
-          <button className="bg-slate-600 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200">
-            ← Go Back
-          </button>
-        </Link>
+      <div className="absolute p-0 left-4  top-2 flex flex-row-reverse items-center justify-center">
+        <button
+          className="bg-slate-600 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200"
+          onClick={() => window.history.back()}
+        >
+          ← Go Back
+        </button>
       </div>
       <div
         htmlFor="reloadButton"
@@ -183,7 +186,6 @@ export default function Page() {
             >
               Submit
             </button>
-            
           </div>
         )}
         {userExists && (
@@ -191,19 +193,19 @@ export default function Page() {
             <h1 className="text-2xl font-sans font-bold lg:mt-0 text-red-600">
               Username already exists!
             </h1>
-              <button
-                type="submit"
-                className="text-white font-extrabold mt-4 bg-[#426eff] hover:bg-[#479fc8] hover:scale-110 duration-200 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-fit sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                onClick={() => {
-                  setUserExists(false);
-                  setShowSignUp(true);
-                }}
-              >
-                Try Again
-              </button>
+            <button
+              type="submit"
+              className="text-white font-extrabold mt-4 bg-[#426eff] hover:bg-[#479fc8] hover:scale-110 duration-200 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-fit sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              onClick={() => {
+                setUserExists(false);
+                setShowSignUp(true);
+              }}
+            >
+              Try Again
+            </button>
           </div>
         )}
-        
+
         {signupStatus && (
           <div className="flex flex-col mt-4 mb-2 items-center p-2 justify-center">
             <h1 className="text-2xl font-sans font-bold lg:mt-0 text-green-600">
@@ -214,7 +216,7 @@ export default function Page() {
                 type="submit"
                 className="text-white font-extrabold mt-4 bg-[#426eff] hover:bg-[#479fc8] hover:scale-110 duration-200 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-fit sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
-                Go to Home
+                OK
               </button>
             </Link>
           </div>

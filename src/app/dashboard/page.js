@@ -4,6 +4,8 @@ import Link from 'next/link'; // Linking to other pages
 import Image from 'next/image';
 import Reload from '/public/img/reload.png';
 import WaterHubLogo from '/public/img/WaterHub.png';
+import { get, ref, push, set } from "firebase/database";
+import { database } from "../firebaseConfig";
 
 
 export default function Page() {
@@ -24,19 +26,20 @@ export default function Page() {
     };
 
     // Handle the save username button
-    const handleSaveUsername = () => {
-        localStorage.setItem('username', username);
-        setIsSaved(true); // Set the saving status to true
-    };
+    // const handleSaveUsername = () => {
+    //     localStorage.setItem('username', username);
+    //     setIsSaved(true);
+    // };
 
     return (
       <main className="pt-8">
-        <div className="absolute p-0 left-4  top-4 flex flex-row-reverse items-center justify-center">
-          <Link href="./">
-            <button className="bg-slate-600 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200">
-              ← Go Back
-            </button>
-          </Link>
+        <div className="absolute p-0 left-4  top-2 flex flex-row-reverse items-center justify-center">
+          <button
+            className="bg-slate-600 p-2 font-sans font-bold text-slate-200 rounded-lg hover:scale-110 active:scale-100 duration-200"
+            onClick={() => window.history.back()}
+          >
+            ← Go Back
+          </button>
         </div>
         <div className="absolute p-0 right-16 top-3 flex flex-row-reverse items-center justify-center scale-125 hover:scale-150 duration-200">
           <Image
@@ -62,7 +65,7 @@ export default function Page() {
             Settings
           </h1>
         </div>
-        <div className="flex flex-col items-center mt-4">
+        {/* <div className="flex flex-col items-center mt-4">
           <input
             type="text"
             value={username}
@@ -84,7 +87,7 @@ export default function Page() {
               Save Username
             </button>
           )}
-        </div>
+        </div> */}
       </main>
     );
 }
