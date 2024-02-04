@@ -254,7 +254,10 @@ export default function Page() {
                   }}
                 >
                   {clickedItems.includes(fluid.name) ? (
-                    <div className="addedText">Added</div>
+                    <div className="">
+                      <div className="addedText">Added</div>
+                      <div className="text-xs text-center">tap to <br></br>add again</div>
+                    </div>
                   ) : (
                     <div>
                       <Image

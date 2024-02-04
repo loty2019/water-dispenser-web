@@ -39,14 +39,17 @@ export default function Home() {
             if (user.password === savedPassword) {
               window.location.href = "/individual";
             }
+          } else {
+            setLoading(false);
           }
         }).catch((error) => {
           console.error("Error getting user data:", error);
         }
         ); 
+      } else {
+        setLoading(false);
       }
     }
-    setLoading(false);
   }, []);
 
   const signInHandler = () => {

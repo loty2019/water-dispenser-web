@@ -12,6 +12,7 @@ import Reload from "/public/img/reload.png";
 import NewUser from "/public/img/newUser.png";
 import History from "/public/img/history.png";
 import { user } from "@nextui-org/react";
+import Global from "/public/img/global.png";
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
@@ -73,81 +74,6 @@ export default function Home() {
       setUsername(savedUsername);
     }
   }, []);
-
-  // const handleFluidChange = (event, name) => {
-  //   setInputValues({ ...inputValues, [name]: event.target.value });
-  //   //setFluidValue(event.target.value);
-  //   //setFocusStates({ ...focusStates, [name]: true });
-  // };
-  // const handleBlur = (name) => {
-  //   // Set a timeout to allow click event to fire before hiding the button
-  //   setTimeout(() => {
-  //     setFocusStates({ ...focusStates, [name]: false });
-  //   }, 100);
-  // };
-  // const handleSubmitDone = (userName) => {
-  //   setTimeout(() => {
-  //     setSubmitDone({ ...submitDone, [userName]: true }); // Set it back to true after 2 seconds
-  //   }, 500);
-  //   setTimeout(() => {
-  //     setSubmitDone({ ...submitDone, [userName]: false }); // Set it back to true after 2 seconds
-  //   }, 4000);
-  // };
-  // const handleFluidSubmit = (name, value) => {
-  //   // get formatted string for the date
-  //   const todayDate = new Date().toLocaleString("en-US", {
-  //     timeZone: "America/New_York",
-  //   });
-  //   const options = {
-  //     timeZone: "America/New_York",
-  //     year: "numeric",
-  //     month: "2-digit",
-  //     day: "2-digit",
-  //   };
-  //   const todayDateString = new Date(todayDate)
-  //     .toLocaleString("en-US", options)
-  //     .split(",")[0]
-  //     .replace(/\//g, "-");
-  //   const [month, day, year] = todayDateString.split("-");
-  //   const formattedDateString = `${year}-${month}-${day}`;
-
-  //   // get formatted time hh:mm:ss in the US east coast
-  //   const now = new Date();
-  //   const hours = now.getHours().toString().padStart(2, "0");
-  //   const minutes = now.getMinutes().toString().padStart(2, "0");
-  //   const seconds = now.getSeconds().toString().padStart(2, "0");
-  //   const time = hours + ":" + minutes + ":" + seconds;
-  //   console.log(time);
-
-  //   // create path to store the new values
-  //   let path = `records/${formattedDateString}/${name}/${time}`;
-  //   const fluidRef = ref(database, path);
-
-  //   // set values in the database
-  //   set(fluidRef, parseInt(value)) &&
-  //     set(
-  //       ref(database, "records/forever_consumption"),
-  //       accumulatedAmount + parseInt(value)
-  //     )
-  //       .then(() => {
-  //         console.log("Fluid value added to the database");
-
-  //         // Update the 'users' state with the fetched data for today
-  //         const updatedUsers = [...users];
-  //         const userIndex = updatedUsers.findIndex(
-  //           (user) => user.name === name
-  //         );
-  //         if (userIndex !== -1) {
-  //           updatedUsers[userIndex].data.push({ time, value: parseInt(value) });
-  //           setUsers(updatedUsers);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error adding fluid value to the database:", error);
-  //       });
-  //   setInputValues({ ...inputValues, [name]: "" });
-  //   handleSubmitDone(name);
-  // };
 
   // Fetch the data from the database when the component mounts
   useEffect(() => {
@@ -288,12 +214,11 @@ export default function Home() {
           Hello {username}!
         </h1>
       </div>
-      <div>
+      <div className="flex justify-center items-center">
         <Link href="./global">
-          <div className="flex justify-center">
-            <button className="mt-4 mb-6  z-10 text-lg border-2 border-[#459dc5] bg-[#55c0F3] text-white dark:border-white text-center hover:scale-125 font-extrabold py-1 px-2 rounded-xl transition-all duration-200">
-              Global
-            </button>
+          <div className="flex flex-row mt-4 mb-6 w-fit text-lg border-2 border-[#459dc5] bg-[#55c0F3] text-white dark:border-white text-center hover:scale-125 font-extrabold py-1 px-2 rounded-xl transition-all duration-200">
+            <Image src={Global} alt="global" width={30} height={30} className="scale-100 mr-2" />
+            <button className="">Global</button>
           </div>
         </Link>
       </div>
@@ -313,7 +238,7 @@ export default function Home() {
                 percentage={(userConsumption / (objectives[username] + 10)) * 100}
               />
 
-              <div className="flex flex-row items-center justify-center space-x-4 ">
+              <div className="flex flex-row items-center justify-center space-x-6 ">
                 <Link href={`./fillMenu?username=${username}`}>
                   <div className="flex items-baseline justify-center">
                     <button className="mt-4 z-10 text-lg border-2 border-[#459dc5] bg-[#55c0F3] text-white dark:border-white text-center hover:scale-125 font-extrabold py-1 px-2 rounded-xl transition-all duration-200">
@@ -322,17 +247,12 @@ export default function Home() {
                     <div className="absolute mt-5 w-14 z-0 h-8 bg-[#2a7892] rounded-xl transition-all duration-200 animate-ping" />
                   </div>
                 </Link>
-                <div className="scale-110 hover:scale-150 duration-200 cursor-pointer">
-                  <Link href={`./history?username=${username}`}>
-                    <Image
-                      src={History}
-                      alt="history"
-                      width={33}
-                      height={30}
-                      className="bg-[#55c0F3] border-[#459dc5] dark:border-white border-2 p-1 rounded-lg mt-4"
-                    />
-                  </Link>
-                </div>
+                <Link href={`./history?username=${username}`}>
+                  <div className="flex flex-row scale-110 hover:scale-125 duration-200 cursor-pointer bg-[#55c0F3] border-[#459dc5] dark:border-white border-2 rounded-lg mt-4">
+                    <Image src={History} alt="history" width={30} height={30} className="p-1" />
+                    <span className="pt-1 pr-1 text-white dark:text-white font-bold">History</span>
+                  </div>
+                </Link>
               </div>
             </div>
         </section>
