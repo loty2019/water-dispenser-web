@@ -23,6 +23,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     setAutoLogin(localStorage.getItem("autoLogin") || false);
@@ -31,21 +32,22 @@ export default function Home() {
         const savedUsername = localStorage.getItem("username") || "";
         const savedPassword = localStorage.getItem("password") || "";
 
-        const usersRef = ref(database, "users/"+ savedUsername);
+        const usersRef = ref(database, "users/" + savedUsername);
 
-        get(usersRef).then((snapshot) => {
-          if (snapshot.exists()) {
-            const user = snapshot.val();
-            if (user.password === savedPassword) {
-              window.location.href = "/individual";
+        get(usersRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const user = snapshot.val();
+              if (user.password === savedPassword) {
+                window.location.href = "/individual";
+              }
+            } else {
+              setLoading(false);
             }
-          } else {
-            setLoading(false);
-          }
-        }).catch((error) => {
-          console.error("Error getting user data:", error);
-        }
-        ); 
+          })
+          .catch((error) => {
+            console.error("Error getting user data:", error);
+          });
       } else {
         setLoading(false);
       }
@@ -59,24 +61,30 @@ export default function Home() {
 
     // get the user data from the database
     const userRef = ref(database, `users/${username}`);
-    get(userRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        const user = snapshot.val();
-        if (user.password === password) {
-          window.location.href = "/individual";
+    get(userRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const user = snapshot.val();
+          if (user.password === password) {
+            window.location.href = "/individual";
+          } else {
+            setError(true);
+            setLoading(false);
+          }
         } else {
           setError(true);
           setLoading(false);
         }
-      } else {
+      })
+      .catch((error) => {
+        console.error("Error getting user data:", error);
         setError(true);
         setLoading(false);
-      }
-    }).catch((error) => {
-      console.error("Error getting user data:", error);
-      setError(true);
-      setLoading(false);
-    });
+      });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   if (loading) {
@@ -116,7 +124,7 @@ export default function Home() {
   return (
     <main className="flex justify-center items-center h-screen">
       <div className="absolute top-0">
-        <div className="flex flex-col items-center mt-14 lg:mt-28 p-2 justify-center">
+        <div className="flex flex-col items-center mt-14 p-2 justify-center">
           <Image
             src={WaterHubLogo}
             alt="WaterHubLogo"
@@ -137,7 +145,6 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        
       </div>
       <div className="mb-4 p-5 text-center max-w-sm backdrop-blur-sm bg-white/10 lg:max-w-sm lg:mb-0 lg:text-left mx-auto rounded-3xl">
         <div className="flex flex-col mt-4 mb-2 items-center p-2 justify-center">
@@ -158,22 +165,30 @@ export default function Home() {
               onChange={(e) => setUsername(e.target.value.toLowerCase())}
             />
           </label>
-          <label htmlFor="password">
+          <label htmlFor="password" className="mt-6">
             <label
               htmlFor="first_name"
               className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
             >
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="•••••••••"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="•••••••••"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </label>
           <button
             type="submit"
