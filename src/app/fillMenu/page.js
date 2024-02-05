@@ -104,7 +104,7 @@ export default function Page() {
     }, 100);
 
     setTimeout(() => {
-      //setSubmitDone(false);
+      setSubmitDone(false);
     }, 2500);
 
     // Update the accumulated amount of fluid
@@ -203,7 +203,7 @@ export default function Page() {
   if (submitDone) {
     // generate a pop up message
     return (
-      <div className="flex flex-col justify-center items-center h-screen">
+      <div className="flex flex-col justify-center items-center h-screen pt-24">
         <div className=" p-10 scale-[2] bg-white/20 rounded-xl">
           <FluidMeter
             scale=""
