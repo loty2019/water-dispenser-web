@@ -91,7 +91,16 @@ export default function Page() {
           }}
         />
       </div>
-      {showConfetti && <Confetti />}
+      {showConfetti && (
+        <Confetti
+          style={{
+            position: "fixed", // Use fixed instead of absolute
+            left: 0,
+            top: 0,
+            height: "100%", // Cover the entire height
+          }}
+        />
+      )}
       <div className="flex flex-col items-center mt-14 lg:mt-28 p-2 justify-center">
         <Image
           src={WaterHubLogo}
@@ -146,7 +155,7 @@ export default function Page() {
                 htmlFor="first_name"
                 className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
               >
-                Daily Exercise (min)
+                Daily Average Exercise (min)
               </label>
               <input
                 type="number"

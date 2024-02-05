@@ -70,7 +70,7 @@ export default function Page() {
     };
 
     animateValue(animatedWaterConsumption, waterConsumption, 2000); // duration is 1000ms
-  }, [waterConsumption]);
+  }, [animatedWaterConsumption, waterConsumption]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -242,7 +242,7 @@ export default function Page() {
           }}
         />
       </div>
-      {showConfetti && (
+      {/* {showConfetti && (
         <Confetti
           style={{
             position: "fixed", // Use fixed instead of absolute
@@ -251,7 +251,7 @@ export default function Page() {
             height: "100%", // Cover the entire height
           }}
         />
-      )}
+      )} */}
       <div className="flex flex-col items-center mt-6 p-2 justify-center">
         <Image
           src={WaterHubLogo}

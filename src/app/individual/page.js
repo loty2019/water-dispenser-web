@@ -359,23 +359,35 @@ export default function Home() {
       <div className="flex justify-center items-center lg:px-16">
         <div className="min-w-full items-center justify-center grid gap-6 sm:grid-cols-2">
           <div className="flex justify-center items-center row-span-3 p-5 h-full text-center backdrop-blur-sm bg-white/20 rounded-3xl">
+            <div className="absolute top-4 sm:top-12 left-5 lg:left-14 bg-white/30 rounded-xl p-1">
+              <p className=" font-sans font-bold text-md">Weekly</p>
+              <p className=" font-sans font-bold text-md">Grade</p>
+              <span
+                className={`text-xl font-bold p-1.5 rounded-lg ${
+                  averageGrade >= 60
+                    ? "text-green-600 dark:text-green-400"
+                    : averageGrade < 40
+                    ? "text-red-600 dark:text-red-400"
+                    : "text-yellow-600 dark:text-yellow-400"
+                }`}
+              >
+                {Math.round(averageGrade)}%
+              </span>
+            </div>
             <section className="">
               <div className="entry flex-row text-center mb-4">
                 <span className="text-xl font-extrabold text-blue-950 dark:text-white">
                   Today
                 </span>
-                <p className="font-bold text-sm mb-2 text-blue-950 dark:text-white">
+                <p className="font-bold text-sm mb-4 text-blue-950 dark:text-white">
                   <span className="font-bold  text-xl">
                     {userConsumption || 0}
                   </span>
                   /{objectives || "??"} oz
                 </p>
-                <div className="mb-6">
+                <div className="mb-6 scale-110">
                   <FluidMeter
-                    
-                    percentage={
-                      (userConsumption / (objectives + 10)) * 100
-                    }
+                    percentage={(userConsumption / (objectives + 10)) * 100}
                   />
                 </div>
                 <div className="flex flex-row items-center justify-center space-x-6 mt-2 ">
@@ -437,43 +449,42 @@ export default function Home() {
               </select>
             </div>
           </div>
-          
+
           <Link href={`./history?username=${username}`}>
             <div className="flex justify-center items-center h-64 bg-white/20 backdrop-blur-md rounded-2xl p-2">
               {chartData && chartData.labels ? (
-                  <Line
-                    data={chartData}
-                    options={{
-                      responsive: true,
-                      maintainAspectRatio: false,
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          max: objectives + 10,
+                <Line
+                  data={chartData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        max: objectives + 10,
+                      },
+                    },
+                    plugins: {
+                      title: {
+                        display: true,
+                        text: "Week",
+                        font: {
+                          size: 20,
+                          weight: "bold",
                         },
                       },
-                      plugins: {
-                        title: {
-                          display: true,
-                          text: 'Week',
-                          font: {
-                            size: 20,
-                            weight: 'bold',
-                          },
-                        },
-                        legend: {
-                          display: false,
-                        }
+                      legend: {
+                        display: false,
                       },
-                    }}
-                    style={{ width: "100%", height: "100%" }}
-                  />
+                    },
+                  }}
+                  style={{ width: "100%", height: "100%" }}
+                />
               ) : (
                 <p>No data to display</p>
               )}
             </div>
           </Link>
-
         </div>
       </div>
 

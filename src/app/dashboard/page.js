@@ -205,7 +205,7 @@ export default function Page() {
           </div>
         </div>
         <div className=" bg-white/30 p-5 text-center max-w-sm backdrop-blur-sm lg:max-w-sm lg:mb-0 lg:text-left mx-auto rounded-3xl">
-          <span className="flex flex-col items-center ">Set your daily exercise (min)</span>
+          <span className="flex flex-col items-center ">Set your daily average exercise (min)</span>
           <div className="flex flex-row items-center justify-center mt-4">
             <input
               type="text"
