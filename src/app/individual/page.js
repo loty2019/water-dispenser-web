@@ -311,9 +311,9 @@ export default function Home() {
   }
 
   return (
-    <main className="scroll-wrapper">
+    <main>
       <div>
-        <div className="absolute p-0  top-3 flex flex-row-reverse items-center justify-center">
+        <div className="absolute p-0 left-5 top-3 flex flex-row-reverse items-center justify-center">
           <div className="scale-125 hover:scale-150 duration-200">
             <Link href="./dashboard">
               <Image
