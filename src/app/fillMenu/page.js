@@ -20,12 +20,14 @@ import PurpleHydro from "/public/img/PurpleHydro.png";
 import HelloKittyBottle from "/public/img/helloKitty.png";
 import IceTeaArnold from "/public/img/iceTeaArnold.png";
 import Confetti from "react-confetti";
+import FluidMeter from "../components/FluidMeter";
 
 import "./style.css"; // Importing css file
+import { easeInOut } from "framer-motion";
 
 export default function Page() {
-  const [objectives, setObjectives] = useState({});
-  const [accumulatedAmount, setAccumulatedAmount] = useState(0);
+  const [objective, setObjective] = useState();
+  const [accumulatedAmount, setAccumulatedAmount] = useState(0); // total accumulated amount of fluid
   const [username, setUsername] = useState(null);
   const [inputValues, setInputValues] = useState({});
   const [submitDone, setSubmitDone] = useState(false);
@@ -33,7 +35,9 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
   const [clickedItems, setClickedItems] = useState([]);
-
+  const [waterConsumption, setWaterConsumption] = useState(0); // total water consumption for the day
+  const [animatedWaterConsumption, setAnimatedWaterConsumption] = useState(0);
+  
   const imgIconSize = 70;
   const fluidTypes = [
     { name: "Espresso", amount: 2, imgSrc: Coffee},
@@ -51,9 +55,34 @@ export default function Page() {
   ];
 
   useEffect(() => {
+    const animateValue = (start, end, duration) => {
+        if (start === end) return;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            setAnimatedWaterConsumption(Math.floor(progress * (end - start) + start));
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    };
+
+    animateValue(animatedWaterConsumption, waterConsumption, 2000); // duration is 1000ms
+  }, [waterConsumption]);
+
+  useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const userFromUrl = urlParams.get("username");
+
+    const userTotalWater = localStorage.getItem("userConsumption");
+    const localStorageObjective = localStorage.getItem("objective");
+
     setUsername(userFromUrl);
+
+    setObjective(localStorageObjective);
+    setWaterConsumption(userTotalWater);
 
     // get total accumulated amount of fluid from firebase
     const accumulatedAmountRef = ref(database, "records/forever_consumption");
@@ -62,20 +91,33 @@ export default function Page() {
         setAccumulatedAmount(snapshot.val());
         setLoading(false);
       } else {
-        setLoading(false);
         console.log("No data available");
       }
     });
   }, []);
 
   const handleFluidSubmit = (name, value, itemName, imgSrc) => {
+    setWaterConsumption(0);
+    setTimeout(() => {
+      setWaterConsumption((Number(waterConsumption) + Number(value)));
+      localStorage.setItem("userConsumption", (Number(waterConsumption) + Number(value)));
+    }, 100);
+
+    setTimeout(() => {
+      //setSubmitDone(false);
+    }, 2500);
+
+    // Update the accumulated amount of fluid
+    setAccumulatedAmount((prev) => prev + Number(value));
+
+    // Update the added items state
     setAddedItems((prevItems) => [
       ...prevItems,
-      { name: itemName, src: imgSrc, amount: value },
+      { name: itemName, src: imgSrc, amount: Number(value) },
     ]);
 
     setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 10000);
+    setTimeout(() => setShowConfetti(false), 3000);
     // Update clicked items state
     setClickedItems((prev) => [...prev, itemName]);
 
@@ -158,6 +200,26 @@ export default function Page() {
     );
   }
 
+  if (submitDone) {
+    // generate a pop up message
+    return (
+      <div className="flex flex-col justify-center items-center h-screen">
+        <div className=" p-10 scale-[2] bg-white/20 rounded-xl">
+          <FluidMeter
+            scale=""
+            percentage={
+              (Number(waterConsumption) / (Number(objective) + 10)) * 100
+            }
+          />
+        </div>
+        <p className="font-bold pt-20 mb-4 sm:ml-0 text-sm text-blue-950 dark:text-white">
+          <span className="font-bold text-4xl">{animatedWaterConsumption || 0}</span>/
+          {objective || "??"} oz
+        </p>
+      </div>
+    )
+  }
+
   return (
     <main className="pt-8">
       <div className="absolute p-0 left-4  top-2 flex flex-row-reverse items-center justify-center">
@@ -180,7 +242,16 @@ export default function Page() {
           }}
         />
       </div>
-      {showConfetti && <Confetti />}
+      {showConfetti && (
+        <Confetti
+          style={{
+            position: "fixed", // Use fixed instead of absolute
+            left: 0,
+            top: 0,
+            height: "100%", // Cover the entire height
+          }}
+        />
+      )}
       <div className="flex flex-col items-center mt-6 p-2 justify-center">
         <Image
           src={WaterHubLogo}
@@ -195,99 +266,108 @@ export default function Page() {
           ?
         </h1>
       </div>
-      <div className="flex justify-center mt-5">
-        <div
-          className={`flex flex-row backdrop-blur-md bg-[#ffffffc9] w-fit rounded-xl ${
-            addedItems.length === 0 ? "bg-[#ff5b5b92]" : "bg-[#ffffffa4]"
-          }`}
-        >
-          {addedItems.length === 0 && (
-            <p className="text-center text-sm mt-1 p-4 font-semibold text-blue-950 dark:text-white">
-              Nothing added so far!!
-            </p>
-          )}
-          {addedItems.length !== 0 && (
-            <>
-              <p className="mt-4 mb-4 font-semibold pl-2 pr-2">
-                You added so far:
-              </p>
-              <div className="flex flex-wrap justify-center items-center">
-                {addedItems.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col p-1 justify-center items-center font-extrabold"
-                  >
-                    <Image
-                      src={item.src}
-                      alt={item.name}
-                      width={40}
-                      height={40}
-                    />
-                    {/* Optionally, you can include the name or quantity below each image */}
-                    {/* <p>{`${item.name} (${item.amount} oz)`}</p> */}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-      <div className="mt-2">
-        <p className="flex justify-center text-sm mt-8 font-semibold text-blue-950 dark:text-white">
-          Click on the icon to add fluid
-        </p>
-        <div className="flex justify-center items-center ">
-          <div className="bg-[#ffffff47] rounded-xl w-fit transition-all duration-700">
-            <div className="grid overflow-hidden justify-center place-items-center gap-8 grid-cols-3 sm:grid-cols-3 md:grid-cols-4 sm:gap-16 p-3 mt-2">
-              {fluidTypes.map((fluid, index) => (
-                <div
-                  key={index}
-                  className="textIconWrapper"
-                  onClick={() => {
-                    handleFluidSubmit(
-                      username,
-                      fluid.amount,
-                      fluid.name,
-                      fluid.imgSrc
-                    );
-                    setSubmitDone(true);
-                  }}
-                >
-                  {clickedItems.includes(fluid.name) ? (
-                    <div className="">
-                      <div className="addedText">Added</div>
-                      <div className="text-xs text-center">tap to <br></br>add again</div>
-                    </div>
-                  ) : (
-                    <div>
-                      <Image
-                        src={fluid.imgSrc}
-                        alt={fluid.name}
-                        width={imgIconSize}
-                        height={imgIconSize}
-                      />
-                      <div className="text-xs text-center sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white">
-                        {fluid.name.split("-").map((part, index) => (
-                          <div key={index}>{part}</div>
-                        ))}
-                        <div className="font-extrabold">
-                          ({fluid.amount} oz)
-                        </div>
+      <div className="flex flex-col items-center justify-center sm:flex-row-reverse mb-6">
+        <div className="sm:m-6">
+          <div className="flex justify-center mt-5">
+            <div
+              className={`flex flex-row backdrop-blur-md bg-[#ffffffc9] w-fit rounded-xl ${
+                addedItems.length === 0 ? "bg-[#ff5b5b92]" : "bg-[#ffffffa4]"
+              }`}
+            >
+              {addedItems.length === 0 && (
+                <p className="text-center text-sm mt-1 p-4 font-semibold text-blue-950 dark:text-white">
+                  Nothing added so far!!
+                </p>
+              )}
+              {addedItems.length !== 0 && (
+                <>
+                  <p className="mt-4 mb-4 font-semibold pl-2 pr-2">
+                    You added so far:
+                  </p>
+                  <div className="flex flex-wrap justify-center items-center">
+                    {addedItems.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col p-1 justify-center items-center font-extrabold"
+                      >
+                        <Image
+                          src={item.src}
+                          alt={item.name}
+                          width={40}
+                          height={40}
+                        />
                       </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+          <div className="">
+            <p className="flex justify-center text-sm mt-8 font-semibold text-blue-950 dark:text-white">
+              Click on the icon to add fluid
+            </p>
+            <div className="flex justify-center items-center ">
+              <div className="bg-[#ffffff47] rounded-xl w-fit transition-all duration-700">
+                <div className="grid overflow-hidden justify-center place-items-center gap-8 grid-cols-3 sm:grid-cols-3 md:grid-cols-4 sm:gap-16 p-3 mt-2">
+                  {fluidTypes.map((fluid, index) => (
+                    <div
+                      key={index}
+                      className="textIconWrapper"
+                      onClick={() => {
+                        handleFluidSubmit(
+                          username,
+                          fluid.amount,
+                          fluid.name,
+                          fluid.imgSrc
+                        );
+                        setSubmitDone(true);
+                      }}
+                    >
+                      {clickedItems.includes(fluid.name) ? (
+                        <div className="">
+                          <div className="addedText">Added</div>
+                          <div className="text-xs text-center">
+                            tap to <br></br>add again
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <Image
+                            src={fluid.imgSrc}
+                            alt={fluid.name}
+                            width={imgIconSize}
+                            height={imgIconSize}
+                          />
+                          <div className="text-xs text-center sm:pb-2 pt-1 font-semibold text-blue-950 dark:text-white">
+                            {fluid.name.split("-").map((part, index) => (
+                              <div key={index}>{part}</div>
+                            ))}
+                            <div className="font-extrabold">
+                              ({fluid.amount} oz)
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="flex justify-center items-center mt-5 mb-4">
-        <Link href="./">
-          <button className="bg-[#55C0F3] border-[#459dc5] hover:bg-[#459dc5] shadow-lg border-2 p-2 font-sans font-bold text-slate-200 mb-4 rounded-lg hover:scale-110 active:scale-100 duration-200">
-            Done
-          </button>
-        </Link>
+        <div className="flex p-6 flex-row sm:flex-col items-center justify-center mt-8 lg:mx-24">
+          <FluidMeter
+            scale="125"
+            percentage={
+              (Number(waterConsumption) / (Number(objective) + 10)) * 100
+            }
+          />
+          <p className="font-bold p-2 pt-10 ml-10 sm:ml-0 text-sm mb-2 text-blue-950 dark:text-white">
+            <span className="font-bold text-3xl">{waterConsumption || 0}</span>/
+            {objective || "??"} oz
+          </p>
+        </div>
       </div>
     </main>
   );

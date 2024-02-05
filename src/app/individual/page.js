@@ -143,7 +143,10 @@ export default function Home() {
             const usersToday = extractUsersForToday(recordsSnapshot);
             //console.log(usersToday);
             usersToday[savedUsername] && setUserConsumption(usersToday[savedUsername].reduce((acc, { value }) => acc + value, 0));
-          
+            
+            // save the user consumption to the local storage
+            localStorage.setItem("userConsumption", (usersToday[savedUsername].reduce((acc, { value }) => acc + value, 0)) );
+
             setLoading(false);
           } else {
             console.log("No snapshot data exists.");
@@ -369,6 +372,7 @@ export default function Home() {
                 </p>
                 <div className="mb-6">
                   <FluidMeter
+                    
                     percentage={
                       (userConsumption / (objectives + 10)) * 100
                     }

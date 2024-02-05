@@ -1,6 +1,6 @@
-import './FluidMeter.css'; // Make sure to import your CSS file
+import './FluidMeter.css';
 
-const FluidMeter = ({ percentage }) => {
+const FluidMeter = ({ percentage, scale}) => {
 
     let adjustedPercentage;
     let maskStyle = {};
@@ -15,9 +15,8 @@ const FluidMeter = ({ percentage }) => {
 
 
 
-
     return (
-        <div className="bottle-container mx-auto transition-all duration-200">
+        <div className={`bottle-container scale-${scale}  mx-auto transition-all duration-200`}>
             <div className="mask ">
                 <div className="fill" style={maskStyle}></div>
             </div>
