@@ -182,6 +182,10 @@ export default function Home() {
 
     const recordsRef = ref(database, "records");
     const objectiveRef = ref(database, `users/${username}/objective`);
+    const endDate = new Date();
+    let startDate = new Date();
+
+    startDate.setDate(endDate.getDate() - 7); // 7 days ago
 
     // Use a Promise to fetch both records and objective in parallel
     Promise.all([get(recordsRef), get(objectiveRef)])
@@ -201,16 +205,17 @@ export default function Home() {
 
           // Loop through the records by date
           Object.keys(records).forEach((date) => {
-            if (records[date][username]) {
-              // Loop through the times for this user on this date
+            let recordDate = new Date(date);
+            if (
+              recordDate >= startDate &&
+              recordDate <= endDate &&
+              records[date][username]
+            ) {
               Object.keys(records[date][username]).forEach((time) => {
                 const quantity = records[date][username][time];
-
-                // Add the quantity to the existing total for this date
                 userData[date] = (userData[date] || 0) + quantity;
               });
 
-              // calculate the percentage of the objective
               percentage[date] = Math.round((userData[date] / objective) * 100);
             }
           });
@@ -235,15 +240,14 @@ export default function Home() {
               {
                 label: "Water Consumption",
                 data: Object.values(userData),
-                borderColor: "rgb(75, 192, 192)",
-                backgroundColor: "rgba(75, 192, 192, 0.5)",
+                borderColor: "rgb(85,192,243)",
+                backgroundColor: "rgba(85,192,243, 0.5)",
                 pointRadius: 4, // Change the size of the points
                 tension: 0.4,
                 // add fade effect under the line
                 fill: {
                   target: "origin",
-                  above: "rgba(75, 192, 192, 0.5)",
-                  above: "rgba(75, 192, 192, 0.3)",
+                  above: "rgba(85,192,243, 0.3)",
                 },
               },
               {
@@ -363,22 +367,24 @@ export default function Home() {
                   </span>
                   /{objectives || "??"} oz
                 </p>
-                <FluidMeter
-                  percentage={
-                    (userConsumption / (objectives + 10)) * 100
-                  }
-                />
-                <div className="flex flex-row items-center justify-center space-x-6 ">
+                <div className="mb-6">
+                  <FluidMeter
+                    percentage={
+                      (userConsumption / (objectives + 10)) * 100
+                    }
+                  />
+                </div>
+                <div className="flex flex-row items-center justify-center space-x-6 mt-2 ">
                   <Link href={`./fillMenu?username=${username}`}>
                     <div className="flex items-baseline justify-center">
-                      <button className="mt-4 z-10 text-lg border-2 border-[#459dc5] bg-[#55c0F3] text-white dark:border-white text-center hover:scale-125 font-extrabold py-1 px-2 rounded-xl transition-all duration-200">
+                      <button className="mt-3 z-10 scale-125 text-lg border-2 border-[#459dc5] bg-[#55c0F3] text-white dark:border-white text-center hover:bg-[#469fc8] font-extrabold py-1 px-2 rounded-lg transition-all duration-200">
                         More +
                       </button>
-                      <div className="absolute mt-5 w-14 z-0 h-8 bg-[#2a7892] rounded-xl transition-all duration-200 animate-ping" />
+                      <div className="absolute mt-3.5 w-16 h-9 z-0 bg-[#37758a] rounded-lg transition-all duration-500 animate-ping" />
                     </div>
                   </Link>
                   <Link href={`./history?username=${username}`}>
-                    <div className="flex flex-row scale-110 hover:scale-125 duration-200 cursor-pointer bg-[#55c0F3] border-[#459dc5] dark:border-white border-2 rounded-lg mt-4">
+                    <div className="flex ml-6 flex-row scale-125 hover:bg-[#469fc8] duration-200 cursor-pointer bg-[#55c0F3] border-[#459dc5] dark:border-white border-2 rounded-lg mt-3">
                       <Image
                         src={History}
                         alt="history"
@@ -386,7 +392,7 @@ export default function Home() {
                         height={30}
                         className="p-1"
                       />
-                      <span className="pt-1 pr-1 text-white dark:text-white font-bold">
+                      <span className="pt-1 pr-1 py-1 text-white dark:text-white font-bold">
                         History
                       </span>
                     </div>
@@ -397,7 +403,7 @@ export default function Home() {
           </div>
 
           <Link href="./global">
-            <div className="flex justify-center items-center p-4  border-[#459dc5] bg-[#55c0F3] border-2 text-white dark:border-white rounded-xl">
+            <div className="flex justify-center items-center p-4  border-[#459dc5] hover:bg-[#469fc8] bg-[#55c0F3] border-2 text-white dark:border-white rounded-xl">
               <div className="flex flex-row text-lg text-white text-center font-extrabold">
                 <Image
                   src={Global}
@@ -433,14 +439,29 @@ export default function Home() {
               {chartData && chartData.labels ? (
                   <Line
                     data={chartData}
-                    options={{ responsive: true, maintainAspectRatio: false,
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
                       scales: {
-                      y: {
-                          beginAtZero: true, // Or false, depending on your data
-                          max: objectives+10, // Set this to a value higher than your highest data point
-                      }
-                  }, }}
-                    
+                        y: {
+                          beginAtZero: true,
+                          max: objectives + 10,
+                        },
+                      },
+                      plugins: {
+                        title: {
+                          display: true,
+                          text: 'Week',
+                          font: {
+                            size: 20,
+                            weight: 'bold',
+                          },
+                        },
+                        legend: {
+                          display: false,
+                        }
+                      },
+                    }}
                     style={{ width: "100%", height: "100%" }}
                   />
               ) : (
@@ -452,7 +473,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mb-8 mt-6">
         <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
           Drinking enough water is vital for our health, as it aids in
           maintaining body temperature, lubricating joints, and removing waste.

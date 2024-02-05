@@ -105,15 +105,14 @@ export default function Page() {
                         datasets: [{
                             label: 'Water Consumption',
                             data: Object.values(userData),
-                            borderColor: 'rgb(75, 192, 192)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                            borderColor: 'rgb(85,192,243)',
+                            backgroundColor: 'rgba(85,192,243, 0.5)',
                             pointRadius: 4, // Change the size of the points
                             tension: 0.4,
                             // add fade effect under the line
                             fill: {
                                 target: 'origin',
-                                above: 'rgba(75, 192, 192, 0.5)',
-                                above: 'rgba(75, 192, 192, 0.3)',
+                                above: 'rgba(85,192,243, 0.3)',
                             }
 
                         }, {
@@ -209,11 +208,11 @@ export default function Page() {
             </div>
         </div>
 
-        <div className='flex items-center justify-center'>
+        <div className='flex items-start justify-start'>
             <select
               value={selectedRange}
               onChange={(e) => setSelectedRange(e.target.value)}
-              className='mb-2 p-2 border border-gray-300 rounded-lg bg-white/20 backdrop-blur-md dark:bg-slate-600 dark:text-white'
+              className='mb-2 p-2 border font-bold border-gray-300 rounded-lg bg-white/20 backdrop-blur-md dark:bg-slate-600 dark:text-white'
             >
               <option value="week">1 Week</option>
               <option value="2 weeks">2 Weeks</option>
@@ -233,6 +232,16 @@ export default function Page() {
                   y: {
                     beginAtZero: true, // Or false, depending on your data
                     max: objective + 15, // Set this to a value higher than your highest data point
+                  },
+                },
+                plugins: {
+                  title: {
+                    display: true,
+                    text: "Water Consumption",
+                    font: {
+                      size: 20,
+                      weight: 'bold',
+                    },
                   },
                 },
               }}

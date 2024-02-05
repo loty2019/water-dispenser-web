@@ -71,6 +71,7 @@ export default function Home() {
           if (user.password === password) {
             localStorage.setItem("weight", user.weight);
             localStorage.setItem("exercise", user.exercise);
+            localStorage.setItem("objective", user.objective);
             window.location.href = "/individual";
           } else {
             setError(true);
