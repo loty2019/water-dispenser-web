@@ -26,7 +26,7 @@
   height: 0%;
   /* Adjust height for desired progress */
   width: 100%;
-  transition: height 5s ease-in-out; /* Adjust speed of progress */
+  transition: height 3s ease-in-out; /* Adjust speed of progress */
 }
 
 svg.bottle {

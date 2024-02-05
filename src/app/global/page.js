@@ -11,6 +11,7 @@ import Settings from "/public/img/settingImg.png";
 import Reload from "/public/img/reload.png";
 import NewUser from "/public/img/newUser.png";
 import History from "/public/img/history.png";
+import { user } from "@nextui-org/react";
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
@@ -63,16 +64,13 @@ function getSum(user) {
 export default function Home() {
   // Define the state variable 'users' and the function to update it 'setUsers'
   const [users, setUsers] = useState([]);
-  const [usersRecords, setUsersRecords] = useState([]);
   const [objectives, setObjectives] = useState({});
   const [accumulatedAmount, setAccumulatedAmount] = useState(0);
   const [desiredValue, setDesiredValue] = useState(0);
-  const [focusStates, setFocusStates] = useState({});
-  const [inputValues, setInputValues] = useState({});
-  const [submitDone, setSubmitDone] = useState({});
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [userDetails, setUserDetails] = useState([]);
+  const [everyoneData, setEveryoneData] = useState({});
 
   // Fetch the username from local storage
   useEffect(() => {
@@ -166,6 +164,7 @@ export default function Home() {
       .then((snapshot) => {
         if (snapshot.exists()) {
           const records = snapshot.val();
+          setEveryoneData(records);
 
           // Update the 'accumulatedAmount' state with the fetched data
           setAccumulatedAmount(records.forever_consumption);
@@ -235,6 +234,44 @@ export default function Home() {
       case "option4":
         setDesiredValue(accumulatedAmount.toFixed(1));
         break;
+    }
+  };
+
+  const userGrade = (name) => {
+    if (everyoneData) {
+      const records = everyoneData;
+      const objective = objectives[name];
+      const userData = {};
+      const percentage = {};
+
+      // Loop through the records by date
+      Object.keys(records).forEach((date) => {
+        if (records[date][name]) {
+          // Loop through the times for this user on this date
+          Object.keys(records[date][name]).forEach((time) => {
+            const quantity = records[date][name][time];
+
+            // Add the quantity to the existing total for this date
+            userData[date] = (userData[date] || 0) + quantity;
+          });
+
+          // calculate the percentage of the objective
+          percentage[date] = Math.round((userData[date] / objective) * 100);
+        }
+      });
+
+      //console.log(percentage)
+      // do an average of all the percentages
+      let sum = 0;
+      for (let i in percentage) {
+        if (percentage[i] == 0) {
+          delete percentage[i];
+          continue;
+        }
+        sum += percentage[i];
+      }
+      let average = (sum / Object.keys(percentage).length).toFixed(0); // set the average grade
+      return average;
     }
   };
 
@@ -322,15 +359,20 @@ export default function Home() {
               />
 
               <div className="flex flex-col items-center justify-center md:flex-row md:space-x-4 ">
-                <div className="scale-110 hover:scale-150 duration-200 cursor-pointer">
+                <div className="scale-110 hover:scale-125 duration-200 cursor-pointer">
                   <Link href={`./history?username=${user.name}`}>
-                    <Image
-                      src={History}
-                      alt="history"
-                      width={33}
-                      height={30}
-                      className="bg-[#55c0F3] border-[#459dc5] dark:border-white border-2 p-1 rounded-lg mt-4"
-                    />
+                    <div className="flex flex-row bg-[#55c0F3] border-[#459dc5] dark:border-white border-2 p-1 rounded-lg mt-4">
+                      <Image
+                        src={History}
+                        alt="history"
+                        width={33}
+                        height={30}
+                        className=""
+                      />
+                      <p className="ml-1 flex items-center font-bold justify-center text-center text-white" >
+                        {userGrade(user.name)}%
+                      </p>
+                    </div>
                   </Link>
                 </div>
               </div>

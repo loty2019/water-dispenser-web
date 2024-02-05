@@ -44,7 +44,7 @@ export default function Page() {
           setTimeout(() => setShowConfetti(false), 13000);
 
           const newUserRef = ref(database, `users/${username}`);
-          set(newUserRef, { objective: totalWaterIntake, password: password })
+          set(newUserRef, { objective: totalWaterIntake, password: password, weight: weight, exercise: exercise })
             .then(() => {
               console.log("New user added to the database");
             })

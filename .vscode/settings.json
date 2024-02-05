@@ -3,9 +3,12 @@
         "Appa",
         "beerbottle",
         "chartjs",
+        "fontawesome",
+        "fortawesome",
         "Hydroflask",
         "Laci",
         "nextui",
         "Userhandler"
-    ]
+    ],
+    "compile-hero.disable-compile-files-on-did-save-code": true
 }

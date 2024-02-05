@@ -1,6 +1,29 @@
 "use client";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 import { get, ref, push, set } from "firebase/database";
 import { useEffect, useState } from "react";
+import { Line } from 'react-chartjs-2';
 import FluidMeter from "../components/FluidMeter";
 import { database } from "../firebaseConfig";
 import Link from "next/link"; // Linking to other pages
@@ -13,6 +36,9 @@ import NewUser from "/public/img/newUser.png";
 import History from "/public/img/history.png";
 import { user } from "@nextui-org/react";
 import Global from "/public/img/global.png";
+// styles
+import "./individual.css";
+
 
 // Function to extract users for today
 const extractUsersForToday = (records) => {
@@ -59,21 +85,14 @@ const extractUsersForToday = (records) => {
 export default function Home() {
   // Define the state variable 'users' and the function to update it 'setUsers'
   const [users, setUsers] = useState([]);
-  const [objectives, setObjectives] = useState({});
+  const [objectives, setObjectives] = useState();
   const [accumulatedAmount, setAccumulatedAmount] = useState(0);
   const [desiredValue, setDesiredValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [userConsumption, setUserConsumption] = useState(0);
-
-
-  // Fetch the username from local storage
-  useEffect(() => {
-    const savedUsername = localStorage.getItem("username");
-    if (savedUsername) {
-      setUsername(savedUsername);
-    }
-  }, []);
+  const [chartData, setChartData] = useState({});
+  const [averageGrade, setAverageGrade] = useState(0);
 
   // Fetch the data from the database when the component mounts
   useEffect(() => {
@@ -87,58 +106,170 @@ export default function Home() {
     }
     
     // Fetch the records data
-    get(recordsRef)
+    async function fetchData() {
+    // if the password is correct, fetch the records data
+    let correctPassword = false;
+
+    await get(ref(database, `users/${savedUsername}/password`))
       .then((snapshot) => {
-        if (snapshot.exists()) {
-          const recordsSnapshot = snapshot.val();
-          // from the recordsSnapshot, calculate the total amount of water drank by the specific user
-          const totalAmount = Object.keys(recordsSnapshot).reduce((acc, date) => {
-            if (recordsSnapshot[date][savedUsername]) {
-              return acc + Object.values(recordsSnapshot[date][savedUsername]).reduce((acc, value) => acc + value, 0);
-            }
-            return acc;
-          } , 0);
+        const dbPassword = snapshot.val().toString(); // the password from the database
 
-          setAccumulatedAmount(totalAmount);
-          setDesiredValue((totalAmount * 0.0078125).toFixed(1));
+        const localStoragePassword = localStorage.getItem('password');
 
-          const usersToday = extractUsersForToday(recordsSnapshot);
-          console.log(usersToday);
-          usersToday[savedUsername] && setUserConsumption(usersToday[savedUsername].reduce((acc, { value }) => acc + value, 0));
+        correctPassword = dbPassword === localStoragePassword;
         
-          setLoading(false);
-        } else {
-          console.log("No snapshot data exists.");
-        }
       })
+      .catch((error) => {
+        console.log("Error", error);
+        correctPassword = false;
+      });
+
+    if (correctPassword) {
+      get(recordsRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const recordsSnapshot = snapshot.val();
+            // from the recordsSnapshot, calculate the total amount of water drank by the specific user
+            const totalAmount = Object.keys(recordsSnapshot).reduce((acc, date) => {
+              if (recordsSnapshot[date][savedUsername]) {
+                return acc + Object.values(recordsSnapshot[date][savedUsername]).reduce((acc, value) => acc + value, 0);
+              }
+              return acc;
+            } , 0);
+
+            setAccumulatedAmount(totalAmount);
+            setDesiredValue((totalAmount * 0.0078125).toFixed(1));
+
+            const usersToday = extractUsersForToday(recordsSnapshot);
+            //console.log(usersToday);
+            usersToday[savedUsername] && setUserConsumption(usersToday[savedUsername].reduce((acc, { value }) => acc + value, 0));
+          
+            setLoading(false);
+          } else {
+            console.log("No snapshot data exists.");
+          }
+        })
       .catch((error) => {
         console.error("Error fetching data: ", error);
       });
-
+    }
+  }
+  fetchData();
   }, []);
 
-  useEffect(() => {
-    // Fetch users data
-    const usersRef = ref(database, "users");
-    get(usersRef)
+  useEffect( () => {
+
+    async function fetchData() {
+    const username = localStorage.getItem("username");
+
+    let correctPassword = false;
+
+    await get(ref(database, `users/${username}/password`))
       .then((snapshot) => {
-        if (snapshot.exists()) {
-          const usersSnapshot = snapshot.val();
-          const updatedObjectives = {};
-          Object.keys(usersSnapshot).forEach((userName) => {
-            // Assuming that each user object has an 'objective' field
-            const userObjective = usersSnapshot[userName].objective;
-            updatedObjectives[userName] = userObjective || "??";
-          });
-          setObjectives(updatedObjectives);
-        } else {
-          console.log("No snapshot data exists.");
-        }
+        const dbPassword = snapshot.val().toString(); // the password from the database
+
+        const localStoragePassword = localStorage.getItem('password');
+
+        correctPassword = dbPassword === localStoragePassword;
+        
       })
       .catch((error) => {
-        console.error("Error fetching data: ", error);
+        console.log("Error", error);
+        correctPassword = false;
       });
-  }, [users]);
+
+    if (correctPassword) {
+
+    const recordsRef = ref(database, "records");
+    const objectiveRef = ref(database, `users/${username}/objective`);
+
+    // Use a Promise to fetch both records and objective in parallel
+    Promise.all([get(recordsRef), get(objectiveRef)])
+      .then(([recordsSnapshot, objectiveSnapshot]) => {
+        let objective = 0;
+        if (objectiveSnapshot.exists()) {
+          objective = objectiveSnapshot.val();
+          setObjectives(objective);
+        } else {
+          console.log("No objective data available");
+        }
+
+        if (recordsSnapshot.exists()) {
+          const records = recordsSnapshot.val();
+          const userData = {};
+          const percentage = {};
+
+          // Loop through the records by date
+          Object.keys(records).forEach((date) => {
+            if (records[date][username]) {
+              // Loop through the times for this user on this date
+              Object.keys(records[date][username]).forEach((time) => {
+                const quantity = records[date][username][time];
+
+                // Add the quantity to the existing total for this date
+                userData[date] = (userData[date] || 0) + quantity;
+              });
+
+              // calculate the percentage of the objective
+              percentage[date] = Math.round((userData[date] / objective) * 100);
+            }
+          });
+
+          //console.log(percentage)
+          // do an average of all the percentages
+          let sum = 0;
+          for (let i in percentage) {
+            if (percentage[i] == 0) {
+              delete percentage[i];
+              continue;
+            }
+            sum += percentage[i];
+          }
+          let average = sum / Object.keys(percentage).length;
+          setAverageGrade(average); // set the average grade
+
+          // Convert userData to chartData
+          setChartData({
+            labels: Object.keys(userData).sort(),
+            datasets: [
+              {
+                label: "Water Consumption",
+                data: Object.values(userData),
+                borderColor: "rgb(75, 192, 192)",
+                backgroundColor: "rgba(75, 192, 192, 0.5)",
+                pointRadius: 4, // Change the size of the points
+                tension: 0.4,
+                // add fade effect under the line
+                fill: {
+                  target: "origin",
+                  above: "rgba(75, 192, 192, 0.5)",
+                  above: "rgba(75, 192, 192, 0.3)",
+                },
+              },
+              {
+                label: "Ideal Consumption",
+                data: Array(Object.keys(userData).length).fill(objective), // Array of 'objective' values
+                borderColor: "red",
+                borderWidth: 3,
+                borderDash: [10, 5], // line dashed
+                tension: 0,
+                pointRadius: 0, // No points along this line
+              },
+            ],
+          });
+        } else {
+          console.log("No records data available");
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      });
+    }
+  }
+  fetchData();
+  }, []);
 
   const onOptionChangeHandler = (event) => {
     switch (
@@ -176,33 +307,36 @@ export default function Home() {
   }
 
   return (
-    <main className="scroll-wrapper min-h-screen lg:p-14 flex-col">
-      <div className="absolute p-0 right-16 top-3 flex flex-row-reverse items-center justify-center">
-        <div className="scale-125 hover:scale-150 duration-200">
-          <Link href="./dashboard">
+    <main className="scroll-wrapper">
+      <div>
+        <div className="absolute p-0  top-3 flex flex-row-reverse items-center justify-center">
+          <div className="scale-125 hover:scale-150 duration-200">
+            <Link href="./dashboard">
+              <Image
+                src={Settings}
+                alt="settings"
+                width={32}
+                height={32}
+                className="bg-slate-600 p-1 rounded-md"
+              />
+            </Link>
+          </div>
+          <div className="mr-5">
             <Image
-              src={Settings}
-              alt="settings"
+              src={Reload}
+              alt="Reload"
               width={32}
               height={32}
-              className="bg-slate-600 p-1 rounded-md"
+              className="bg-slate-600 p-1.5 rounded-md scale-125 hover:scale-150 duration-200"
+              onClick={() => {
+                window.location.reload(true);
+              }}
             />
-          </Link>
-        </div>
-        <div className="mr-5">
-          <Image
-            src={Reload}
-            alt="Reload"
-            width={32}
-            height={32}
-            className="bg-slate-600 p-1.5 rounded-md scale-125 hover:scale-150 duration-200"
-            onClick={() => {
-              window.location.reload(true);
-            }}
-          />
+          </div>
         </div>
       </div>
-      <div className="flex flex-col mt-8 sm:mt-4 items-center p-2 justify-center">
+
+      <div className="flex flex-col mt-8 mb-6 sm:mt-4 items-center p-2 justify-center">
         <Image
           src={WaterHubLogo}
           alt="WaterHubLogo"
@@ -214,67 +348,111 @@ export default function Home() {
           Hello {username}!
         </h1>
       </div>
-      <div className="flex justify-center items-center">
-        <Link href="./global">
-          <div className="flex flex-row mt-4 mb-6 w-fit text-lg border-2 border-[#459dc5] bg-[#55c0F3] text-white dark:border-white text-center hover:scale-125 font-extrabold py-1 px-2 rounded-xl transition-all duration-200">
-            <Image src={Global} alt="global" width={30} height={30} className="scale-100 mr-2" />
-            <button className="">Global</button>
-          </div>
-        </Link>
-      </div>
-      <div className="mb-4 p-5 text-center backdrop-blur-sm bg-white/10 max-w-sm lg:mb-0 lg:text-left mx-auto rounded-3xl">
-        <section className="flex flex-col justify-center items-center">
-            <div className="entry flex-row text-center mb-16">
-              <span className="text-xl font-extrabold text-blue-950 dark:text-white">
-                Today
-              </span>
-              <p className="font-bold text-sm mb-2 text-blue-950 dark:text-white">
-                <span className="font-bold  text-xl">
-                  {userConsumption || 0}
-                </span>
-                /{objectives[username] || "??"} oz
-              </p>
-              <FluidMeter
-                percentage={(userConsumption / (objectives[username] + 10)) * 100}
-              />
 
-              <div className="flex flex-row items-center justify-center space-x-6 ">
-                <Link href={`./fillMenu?username=${username}`}>
-                  <div className="flex items-baseline justify-center">
-                    <button className="mt-4 z-10 text-lg border-2 border-[#459dc5] bg-[#55c0F3] text-white dark:border-white text-center hover:scale-125 font-extrabold py-1 px-2 rounded-xl transition-all duration-200">
-                      More +
-                    </button>
-                    <div className="absolute mt-5 w-14 z-0 h-8 bg-[#2a7892] rounded-xl transition-all duration-200 animate-ping" />
-                  </div>
-                </Link>
-                <Link href={`./history?username=${username}`}>
-                  <div className="flex flex-row scale-110 hover:scale-125 duration-200 cursor-pointer bg-[#55c0F3] border-[#459dc5] dark:border-white border-2 rounded-lg mt-4">
-                    <Image src={History} alt="history" width={30} height={30} className="p-1" />
-                    <span className="pt-1 pr-1 text-white dark:text-white font-bold">History</span>
-                  </div>
-                </Link>
+      <div className="flex justify-center items-center lg:px-16">
+        <div className="min-w-full items-center justify-center grid gap-6 sm:grid-cols-2">
+          <div className="flex justify-center items-center row-span-3 p-5 h-full text-center backdrop-blur-sm bg-white/20 rounded-3xl">
+            <section className="">
+              <div className="entry flex-row text-center mb-4">
+                <span className="text-xl font-extrabold text-blue-950 dark:text-white">
+                  Today
+                </span>
+                <p className="font-bold text-sm mb-2 text-blue-950 dark:text-white">
+                  <span className="font-bold  text-xl">
+                    {userConsumption || 0}
+                  </span>
+                  /{objectives || "??"} oz
+                </p>
+                <FluidMeter
+                  percentage={
+                    (userConsumption / (objectives + 10)) * 100
+                  }
+                />
+                <div className="flex flex-row items-center justify-center space-x-6 ">
+                  <Link href={`./fillMenu?username=${username}`}>
+                    <div className="flex items-baseline justify-center">
+                      <button className="mt-4 z-10 text-lg border-2 border-[#459dc5] bg-[#55c0F3] text-white dark:border-white text-center hover:scale-125 font-extrabold py-1 px-2 rounded-xl transition-all duration-200">
+                        More +
+                      </button>
+                      <div className="absolute mt-5 w-14 z-0 h-8 bg-[#2a7892] rounded-xl transition-all duration-200 animate-ping" />
+                    </div>
+                  </Link>
+                  <Link href={`./history?username=${username}`}>
+                    <div className="flex flex-row scale-110 hover:scale-125 duration-200 cursor-pointer bg-[#55c0F3] border-[#459dc5] dark:border-white border-2 rounded-lg mt-4">
+                      <Image
+                        src={History}
+                        alt="history"
+                        width={30}
+                        height={30}
+                        className="p-1"
+                      />
+                      <span className="pt-1 pr-1 text-white dark:text-white font-bold">
+                        History
+                      </span>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <Link href="./global">
+            <div className="flex justify-center items-center p-4  border-[#459dc5] bg-[#55c0F3] border-2 text-white dark:border-white rounded-xl">
+              <div className="flex flex-row text-lg text-white text-center font-extrabold">
+                <Image
+                  src={Global}
+                  alt="global"
+                  width={30}
+                  height={30}
+                  className="mr-2"
+                />
+                <button className="">Global View</button>
               </div>
             </div>
-        </section>
+          </Link>
 
-        <section className="text-center mx-auto">
-          <div className="border-black dark:border-white border-2 p-2 inline-block rounded-lg">
-            <p className="text-center inline-block font-bold text-xl">
-              Total ever drank: {desiredValue}
-            </p>
-            <select
-              className="ml-2 inline-block font-semibold border border-black rounded-sm text-xl bg-transparent"
-              onChange={onOptionChangeHandler}
-            >
-              <option value="option1">gallons</option>
-              <option value="option2">liters</option>
-              <option value="option3">glasses</option>
-              <option value="option4">ounces</option>
-            </select>
+          <div className="text-center">
+            <div className="flex flex-col justify-center items-center backdrop-blur-sm bg-white/20 py-4 rounded-xl">
+              <p className="text-center inline-block font-bold text-xl">
+                Total you ever drank: {desiredValue}
+              </p>
+              <select
+                className="ml-4 font-semibold border border-black rounded-sm text-xl bg-transparent"
+                onChange={onOptionChangeHandler}
+              >
+                <option value="option1">gallons</option>
+                <option value="option2">liters</option>
+                <option value="option3">glasses</option>
+                <option value="option4">ounces</option>
+              </select>
+            </div>
           </div>
-        </section>
+          
+          <Link href={`./history?username=${username}`}>
+            <div className="flex justify-center items-center h-64 bg-white/20 backdrop-blur-md rounded-2xl p-2">
+              {chartData && chartData.labels ? (
+                  <Line
+                    data={chartData}
+                    options={{ responsive: true, maintainAspectRatio: false,
+                      scales: {
+                      y: {
+                          beginAtZero: true, // Or false, depending on your data
+                          max: objectives+10, // Set this to a value higher than your highest data point
+                      }
+                  }, }}
+                    
+                    style={{ width: "100%", height: "100%" }}
+                  />
+              ) : (
+                <p>No data to display</p>
+              )}
+            </div>
+          </Link>
+
+        </div>
       </div>
-      <div className="flex justify-center mt-4">
+
+      <div className="flex justify-center mt-6">
         <p className="text-center text-sm font-bold text-blue-950 dark:text-white">
           Drinking enough water is vital for our health, as it aids in
           maintaining body temperature, lubricating joints, and removing waste.

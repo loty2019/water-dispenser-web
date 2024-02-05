@@ -12,6 +12,9 @@ import Reload from "/public/img/reload.png";
 import NewUser from "/public/img/newUser.png";
 import History from "/public/img/history.png";
 import Profile from "/public/img/newUser.png";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
 
 /**
  * Represents the Home component.
@@ -66,6 +69,8 @@ export default function Home() {
         if (snapshot.exists()) {
           const user = snapshot.val();
           if (user.password === password) {
+            localStorage.setItem("weight", user.weight);
+            localStorage.setItem("exercise", user.exercise);
             window.location.href = "/individual";
           } else {
             setError(true);
@@ -122,8 +127,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex justify-center items-center h-screen">
-      <div className="absolute top-0">
+    <main >
         <div className="flex flex-col items-center mt-14 p-2 justify-center">
           <Image
             src={WaterHubLogo}
@@ -145,12 +149,11 @@ export default function Home() {
             </Link>
           </div>
         </div>
-      </div>
       <div className="mb-4 p-5 text-center max-w-sm backdrop-blur-sm bg-white/10 lg:max-w-sm lg:mb-0 lg:text-left mx-auto rounded-3xl">
         <div className="flex flex-col mt-4 mb-2 items-center p-2 justify-center">
           <label htmlFor="username">
             <label
-              htmlFor="first_name"
+              htmlFor="username"
               className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
             >
               Your name
@@ -161,13 +164,14 @@ export default function Home() {
               className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="john"
               required
+              autoComplete="username"
               value={username}
               onChange={(e) => setUsername(e.target.value.toLowerCase())}
             />
           </label>
           <label htmlFor="password" className="mt-6">
             <label
-              htmlFor="first_name"
+              htmlFor="password"
               className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
             >
               Password
@@ -176,7 +180,7 @@ export default function Home() {
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
-                className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-gray-50 border mb-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="•••••••••"
                 required
                 value={password}
@@ -184,9 +188,9 @@ export default function Home() {
               />
               <button
                 onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                className="absolute scale-110 inset-y-0 pr-3 right-0 items-center text-sm leading-5"
               >
-                {showPassword ? "Hide" : "Show"}
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </button>
             </div>
           </label>

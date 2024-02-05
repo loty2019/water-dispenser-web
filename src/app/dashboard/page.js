@@ -9,13 +9,20 @@ import { database } from "../firebaseConfig";
 
 export default function Page() {
   const [password, setPassword] = useState("");
-  const [isSaved, setIsSaved] = useState(false);
+  const [weight, setWeight] = useState("");
+  const [exercise, setExercise] = useState("");
+  const [isSavedP, setIsSavedP] = useState(false);
+  const [isSavedW, setIsSavedW] = useState(false);
+  const [isSavedE, setIsSavedE] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [username, setUsername] = useState("");
 
   // Load the username from local storage
   useEffect(() => {
     setUsername(localStorage.getItem("username") || "");
+    setWeight(localStorage.getItem("weight") || "");
+    setExercise(localStorage.getItem("exercise") || "");
+
 
     const savedPassword = localStorage.getItem("password");
     if (savedPassword) {
@@ -38,7 +45,51 @@ export default function Page() {
       password: password,
     });
 
-    setIsSaved(true);
+    setIsSavedP(true);
+  };
+
+  const handleWeightChange = (event) => {
+    setWeight(event.target.value);
+  };
+
+  const handleSaveWeight = () => {
+    localStorage.setItem("weight", weight);
+
+    // calculate the objective 
+    const baseWaterIntake = weight * (2 / 3); // Base intake based on weight
+    const additionalWater = (parseInt(exercise) / 30) * 12; // Additional water based on exercise
+    const totalWaterIntake = Math.round(baseWaterIntake + additionalWater);
+
+    // save to the database
+    const userRef = ref(database, `users/${username}`);
+    update(userRef, {
+      weight: weight,
+      objective: totalWaterIntake,
+    });
+
+    setIsSavedW(true);
+  };
+
+  const handleExerciseChange = (event) => {
+    setExercise(event.target.value);
+  };
+
+  const handleSaveExercise = () => {
+    localStorage.setItem("exercise", exercise);
+
+    // calculate the objective 
+    const baseWaterIntake = weight * (2 / 3); // Base intake based on weight
+    const additionalWater = (parseInt(exercise) / 30) * 12; // Additional water based on exercise
+    const totalWaterIntake = Math.round(baseWaterIntake + additionalWater);
+
+    // save to the database
+    const userRef = ref(database, `users/${username}`);
+    update(userRef, {
+      exercise: exercise,
+      objective: totalWaterIntake,
+    });
+
+    setIsSavedE(true);
   };
 
   // Handle the log out button
@@ -92,16 +143,16 @@ export default function Page() {
             value={password}
             onChange={handlePasswordChange}
             placeholder={"Enter your password"}
-            className="p-2 border border-gray-300 rounded-lg"
+            className="p-2 border border-gray-300 rounded-l-lg"
           />
-          {isSaved ? (
-            <button className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
-              Successful
+          {isSavedP ? (
+            <button className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-r-lg">
+              Success
             </button>
           ) : (
             <button
               onClick={handleSavePassword}
-              className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+              className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-lg"
             >
               Save
             </button>
@@ -109,7 +160,55 @@ export default function Page() {
         </div>
       </div>
       <div className="mt-6 bg-white/30 p-5 text-center max-w-sm backdrop-blur-sm lg:max-w-sm lg:mb-0 lg:text-left mx-auto rounded-3xl">
-        <span className="flex flex-col items-center ">Do you want to log out ?</span>
+        <span className="flex flex-col items-center ">Set your weight (lb)</span>
+        <div className="flex flex-row items-center justify-center mt-4">
+          <input
+            type="text"
+            value={weight}
+            onChange={handleWeightChange}
+            placeholder={"Your weight"}
+            className="p-2 border border-gray-300 rounded-l-lg"
+          />
+          {isSavedW ? (
+            <button className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-r-lg">
+              Success
+            </button>
+          ) : (
+            <button
+              onClick={handleSaveWeight}
+              className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-lg"
+            >
+              Save
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="mt-6 bg-white/30 p-5 text-center max-w-sm backdrop-blur-sm lg:max-w-sm lg:mb-0 lg:text-left mx-auto rounded-3xl">
+        <span className="flex flex-col items-center ">Set your daily exercise (min)</span>
+        <div className="flex flex-row items-center justify-center mt-4">
+          <input
+            type="text"
+            value={exercise}
+            onChange={handleExerciseChange}
+            placeholder={"Your daily exercise"}
+            className="p-2 border border-gray-300 rounded-l-lg"
+          />
+          {isSavedE ? (
+            <button className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-r-lg">
+              Success
+            </button>
+          ) : (
+            <button
+              onClick={handleSaveExercise}
+              className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-lg"
+            >
+              Save
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-col items-center mt-6 bg-white/30 p-5 text-center max-w-sm backdrop-blur-sm lg:max-w-sm lg:mb-0 lg:text-left mx-auto rounded-3xl">
+        <span className="flex flex-col items-center">Do you want to log out ?</span>
         {isLogged ? (
           <button className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
             Successful log out
