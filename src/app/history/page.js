@@ -231,7 +231,7 @@ export default function Page() {
                 scales: {
                   y: {
                     beginAtZero: true, // Or false, depending on your data
-                    max: objective + 15, // Set this to a value higher than your highest data point
+                    max: Math.max(objective + 10, Math.max(...chartData.datasets[0].data)+10),
                   },
                 },
                 plugins: {
