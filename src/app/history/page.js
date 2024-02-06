@@ -60,8 +60,8 @@ export default function Page() {
             case '3 months':
                 startDate.setMonth(endDate.getMonth() - 3);
                 break;
-            case 'forever':
-                // No change to startDate
+            case '1 year':
+                startDate.setMonth(endDate.getMonth() - 12);
                 break;
         }
 
@@ -218,7 +218,7 @@ export default function Page() {
               <option value="2 weeks">2 Weeks</option>
               <option value="month">1 Month</option>
               <option value="3 months">3 Months</option>
-              <option value="forever">Forever</option>
+              <option value="1 year">1 Year</option>
             </select>
         </div>
         <div className="flex justify-center items-center h-64 sm:h-80 md:h-96  bg-white/20 backdrop-blur-md rounded-2xl p-2">

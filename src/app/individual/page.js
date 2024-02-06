@@ -358,7 +358,7 @@ export default function Home() {
           className=" mt-6 dark:bg-slate-300 rounded-xl"
         />
         <h1 className="text-4xl font-sans text-center font-bold lg:mt-0 text-blue-950 dark:text-white capitalize">
-          Hello {username}!
+          Hello <span className={`${averageGrade >= 90 ? "fire-effect" : ""}`}>{username}</span>!
         </h1>
       </div>
 
@@ -368,12 +368,12 @@ export default function Home() {
             <section className="">
               <div className="entry flex-row text-center mb-4">
 
-                <div className='flex flex-row items-start justify-start p'>
-                  <div className=" relative  bg-white/30 rounded-xl p-1">
-                    <p className=" font-sans font-bold text-md">Weekly</p>
-                    <p className=" font-sans font-bold text-md">Grade</p>
+                <div className='flex flex-row items-center justify-center mb-3'>
+                  <div className="absolute left-8 bg-white/30 rounded-xl p-1">
+                    <p className=" font-sans font-bold text-sm sm:text-md">Weekly</p>
+                    <p className=" font-sans font-bold text-sm sm:text-md">Grade</p>
                     <span
-                      className={`text-xl font-bold p-1.5 rounded-lg ${
+                      className={`text-md sm:text-xl font-bold p-1.5 rounded-lg ${
                         averageGrade >= 60
                           ? "text-green-600 dark:text-green-400"
                           : averageGrade < 40
@@ -384,8 +384,8 @@ export default function Home() {
                       {Math.round(averageGrade)}%
                     </span>
                   </div>
-                  <div className='flex flex-col ml-6'>
-                    <span className="text-xl font-extrabold text-blue-950 dark:text-white">
+                  <div className='flex flex-col'>
+                    <span className=" text-xl font-extrabold text-blue-950 dark:text-white">
                       Today
                     </span>
                     <p className="font-bold text-sm mb-4 text-blue-950 dark:text-white">
@@ -482,6 +482,7 @@ export default function Home() {
                         font: {
                           size: 20,
                           weight: "bold",
+                          color: "white", // Add this line to set the title color to white
                         },
                       },
                       legend: {

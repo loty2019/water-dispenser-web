@@ -342,7 +342,7 @@ export default function Home() {
         <section className={`grid grid-cols-2 md:grid-cols-3 justify-evenly`}>
           {userDetails.map((user, index) => (
             <div className="entry flex-row text-center mb-16" key={index}>
-              <h1 className="text-2xl font-bold md:text-4xl capitalize">
+              <h1 className={`${userGrade(user.name) >= 90 ? "fire-effect" : ""} text-2xl font-bold md:text-4xl capitalize`}>
                 {user.name}
               </h1>
               <span className="text-sm font-semibold text-blue-950 dark:text-white">

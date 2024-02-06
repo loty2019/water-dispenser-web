@@ -69,7 +69,7 @@ export default function Page() {
         window.requestAnimationFrame(step);
     };
 
-    animateValue(animatedWaterConsumption, waterConsumption, 2000); // duration is 1000ms
+    animateValue(animatedWaterConsumption, waterConsumption, 2000); 
   }, [animatedWaterConsumption, waterConsumption]);
 
   useEffect(() => {
@@ -97,6 +97,7 @@ export default function Page() {
   }, []);
 
   const handleFluidSubmit = (name, value, itemName, imgSrc) => {
+    // logic to allow fill animation
     setWaterConsumption(0);
     setTimeout(() => {
       setWaterConsumption((Number(waterConsumption) + Number(value)));
@@ -201,7 +202,7 @@ export default function Page() {
   }
 
   if (submitDone) {
-    // generate a pop up message
+    // generate fill animation
     return (
       <div className="flex flex-col justify-center items-center h-screen pt-24">
         <div className=" p-10 scale-[2] bg-white/20 rounded-xl">
@@ -242,16 +243,6 @@ export default function Page() {
           }}
         />
       </div>
-      {/* {showConfetti && (
-        <Confetti
-          style={{
-            position: "fixed", // Use fixed instead of absolute
-            left: 0,
-            top: 0,
-            height: "100%", // Cover the entire height
-          }}
-        />
-      )} */}
       <div className="flex flex-col items-center mt-6 p-2 justify-center">
         <Image
           src={WaterHubLogo}

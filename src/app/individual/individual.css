@@ -6,3 +6,13 @@
     align-items: center;
     width: 100%;
 }
+
+@keyframes flicker {
+    0%, 100% { color: #ff6; text-shadow: 0 0 4px #ff3, 0 -5px 4px #ff9, 2px -10px 6px #fd3, -2px -15px 11px #f80, 2px -20px 18px #f20; }
+    25%, 75% { color: #fd6; text-shadow: 0 0 5px #fd3, 0 -5px 6px #fa9, 2px -10px 7px #f93, -2px -15px 13px #f50, 2px -20px 20px #f10; }
+    50% { color: #fb6; text-shadow: 0 0 6px #fb3, 0 -5px 7px #f99, 2px -10px 8px #f73, -2px -15px 15px #f30, 2px -20px 22px #f00; }
+  }
+  
+.fire-effect {
+animation: flicker 1s linear infinite;
+}
