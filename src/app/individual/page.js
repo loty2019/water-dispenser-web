@@ -25,6 +25,7 @@ import { get, ref, push, set } from "firebase/database";
 import { useEffect, useState } from "react";
 import { Line } from 'react-chartjs-2';
 import FluidMeter from "../components/FluidMeter";
+import Plant from '../components/Plant';
 import { database } from "../firebaseConfig";
 import Link from "next/link"; // Linking to other pages
 import Image from "next/image";
@@ -93,6 +94,11 @@ export default function Home() {
   const [userConsumption, setUserConsumption] = useState(0);
   const [chartData, setChartData] = useState({});
   const [averageGrade, setAverageGrade] = useState(0);
+  const [percentage, setPercentage] = useState(0);
+
+  const handleInputChange = (e) => {
+    setPercentage(e.target.value);
+  };
 
   // Fetch the data from the database when the component mounts
   useEffect(() => {
