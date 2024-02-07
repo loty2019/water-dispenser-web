@@ -473,7 +473,7 @@ export default function Home() {
                     scales: {
                       y: {
                         beginAtZero: true,
-                        max: Math.max(objectives + 10, Math.max(...chartData.datasets[0].data)+10),
+                        max: Math.max(Number(objectives) + 10, Math.max(...chartData.datasets[0].data) + 10),
                       },
                     },
                     plugins: {

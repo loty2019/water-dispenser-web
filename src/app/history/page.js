@@ -230,8 +230,8 @@ export default function Page() {
                 maintainAspectRatio: false,
                 scales: {
                   y: {
-                    beginAtZero: true, // Or false, depending on your data
-                    max: Math.max(objective + 10, Math.max(...chartData.datasets[0].data)+10),
+                    beginAtZero: true,
+                    max: Math.max(Number(objective) + 10, Math.max(...chartData.datasets[0].data) + 10), 
                   },
                 },
                 plugins: {
