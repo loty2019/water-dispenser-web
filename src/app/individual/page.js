@@ -399,7 +399,7 @@ export default function Home() {
                 </div>
                 <div className="mb-6 scale-110">
                   <FluidMeter
-                    percentage={(userConsumption / (objectives + 10)) * 100}
+                    percentage={(userConsumption / (Number(objectives) + 10)) * 100}
                   />
                 </div>
                 <div className="flex flex-row items-center justify-center space-x-6 mt-2 ">
