@@ -55,9 +55,6 @@ export default function Page() {
           // Save the username to local storage
           localStorage.setItem("username", username);
           // redirect to the home page
-          //window.location.href = "/";
-          setShowConfetti(true);
-          setTimeout(() => setShowConfetti(false), 13000);
         }
       })
       .catch((error) => {

@@ -8,15 +8,11 @@
   }
 }
 
-
-@supports(padding:max(0px)) {
-	body {
-		/* new syntax iOS 11.2+ */
-		padding-left:  max(1em, env(safe-area-inset-left));
-		padding-right: max(1em, env(safe-area-inset-right));
-	}
+body {
+  /* new syntax iOS 11.2+ */
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
-
 .scroll-wrapper {
   overflow-y: auto; /* Allow vertical scrolling */
   scrollbar-width: none; /* For Firefox */

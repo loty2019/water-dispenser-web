@@ -203,6 +203,7 @@ export default function Home() {
         if (objectiveSnapshot.exists()) {
           objective = objectiveSnapshot.val();
           setObjectives(objective);
+          localStorage.setItem("objective", objective);
         } else {
           console.log("No objective data available");
         }
@@ -369,7 +370,7 @@ export default function Home() {
               <div className="entry flex-row text-center mb-4">
 
                 <div className='flex flex-row items-center justify-center mb-3'>
-                  <div className="absolute left-8 bg-white/30 rounded-xl p-1">
+                  <div className="absolute mr-52 bg-white/30 rounded-xl p-1">
                     <p className=" font-sans font-bold text-sm sm:text-md">Weekly</p>
                     <p className=" font-sans font-bold text-sm sm:text-md">Grade</p>
                     <span
