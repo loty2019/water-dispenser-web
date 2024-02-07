@@ -7,4 +7,4 @@ name: **lorenzo**
 
 password: **admin**
 
-Things are mess-proof, so feel free to play around; I trust your good intentions.
+Things are mess-proof, so feel free to play around adding water, registering, and other things; I trust your good intentions.
