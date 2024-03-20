@@ -151,7 +151,12 @@ export default function Home() {
             usersToday[savedUsername] && setUserConsumption(usersToday[savedUsername].reduce((acc, { value }) => acc + value, 0));
             
             // save the user consumption to the local storage
-            localStorage.setItem("userConsumption", (usersToday[savedUsername].reduce((acc, { value }) => acc + value, 0)) );
+            if (usersToday[savedUsername]) {
+              setUserConsumption(usersToday[savedUsername].reduce((acc, { value }) => acc + value, 0));
+            } else {
+              setUserConsumption(0);
+            }
+            localStorage.setItem("userConsumption", userConsumption);
 
             setLoading(false);
           } else {
@@ -164,7 +169,7 @@ export default function Home() {
     }
   }
   fetchData();
-  }, []);
+  }, [userConsumption]);
 
   useEffect( () => {
 
